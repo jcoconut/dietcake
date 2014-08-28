@@ -1,77 +1,89 @@
 <?php
 class User extends AppModel
 {
+	const MIN_CHAR = 1;
+	const MAX_CHAR = 30;
+	
 	public $validation = array(
 		'user_fname' => array(
 			'format' => array(
 				'alpha_only'
 			),
 			'length' => array(
-				'validate_between', 1, 20,
+				'validate_between', self::MIN_CHAR, self::MAX_CHAR,
 			),
 		),
-
 
 		'user_lname' => array(
 			'format' => array(
 				'alpha_only'
 			),
 			'length' => array(
-				'validate_between', 1, 20,
+				'validate_between', 1, self::MAX_CHAR,
 			),
 		),
+
 		'user_email' => array(
-			'length' => array(
-				'validate_between', 6, 20,
-			),
-		),
-		'user_password' => array(
 			'format' => array(
-				'alpha_only'
+				'is_email'
 			),
 			'length' => array(
-				'validate_between', 1, 20,
+				'validate_between', 6, self::MAX_CHAR,
 			),
 		),
+
 		'user_username' => array(
 			'format' => array(
 				'alpha_only'
 			),
 			'length' => array(
-				'validate_between', 1, 20,
+				'validate_between', 1, self::MAX_CHAR,
 			),
 		),
-		'user_secret' => array(
+
+		'user_password' => array(
 			'length' => array(
-				'validate_between', 6, 20,
+				'validate_between', 6, self::MAX_CHAR,
 			),
 		),
+				
+		
 	);
-	
+
+	public $password_match = true;
+	public $already_registered = false;
 	public function register()
 	{
+	
 		$this->validate();
-		
-		if ($this->hasError() || $this->hasError()) {
+		$this->password_match = is_same($this->user_password,$this->user_confirm_password);
+		if ($this->hasError() || ($this->password_match==false)) {
 			throw new ValidationException('invalid');
 		}
 		$db = DB::conn();
 		$db->begin();
-		$db->query('INSERT INTO user SET user_fname = ?, user_lname = ?, user_email = ?, user_username = ?, user_password = ?, user_registered = NOW()',
-			array($this->user_fname,$this->user_lname,$this->user_email,$this->user_username,$this->user_password));
-		$this->id = $db->lastInsertId();
-		// write first comment at the same time
-		// $this->write($);
-		$db->commit();
+		$found = $db->row('SELECT * FROM user WHERE user_username = ? OR user_email = ?',array($this->user_username,$this->user_email));
+		if($found){
+			$this->already_registered = true;
+			return false;
+		}else{
+			$db->query('INSERT INTO user SET user_fname = ?, user_lname = ?, user_email = ?, user_username = ?, user_password = ?, user_registered = NOW()',
+			array($this->user_fname,$this->user_lname,$this->user_email,$this->user_username,md5(sha1($this->user_password))));
+			$this->id = $db->lastInsertId();
+			$db->commit();
+			return true;
+		}
+		
 	}
-	public function kuke(){
+
+	public function login(){
 		$db = DB::conn();
 		$db->begin();
-		$db->query('INSERT INTO user SET user_fname = ?,user_lname = ?', array('haha',$this->hey));
-		$this->id = $db->lastInsertId();
-		// write first comment at the same time
-		// $this->write($comment);
-		$db->commit();
+		$loguser = $db->row('SELECT * FROM user WHERE user_username = ?', array($this->user_username));
+		if($loguser['user_password']===md5(sha1($this->user_password))){
+			return $loguser;	
+		}
+		
 	}
 	
 

@@ -2,7 +2,7 @@
 
 <?php if ($thread->hasError() || $comment->hasError()): ?>
 <div class="alert alert-block">
-<h4 class="alert-heading">Validation error!</h4>
+	<h4 class="alert-heading">Validation error!</h4>
 
 	<?php if (!empty($thread->validation_errors['title']['length'])): ?>
 	<div><em>Title</em> must be

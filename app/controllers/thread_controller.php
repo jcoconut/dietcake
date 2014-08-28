@@ -6,8 +6,27 @@ class ThreadController extends AppController
 		$threads = Thread::getAll();
 		$this->set(get_defined_vars());
 	}
+	public function user_login(){
+
+		$user = new User();
+		$user->user_username = Param::get('user_username');
+		$user->user_password = Param::get('user_password');
+		$okpyn =$user->login();
+		print_r("<pre>");
+		print_r($okpyn);
+		print_r("</pre>");
+		if($user->login()){
+			echo "nakalogin!";
+			$this->Session->write('User.eyeColor', 'Green');
+		}else{
+			echo "invalid user!";
+		}
+		$user->autoRender = false;
+		exit();
+	}
 	public function register()
 	{
+
 		$user = new User();
 		$page = Param::get('page_next', 'register');
 		switch ($page) {
@@ -21,8 +40,13 @@ class ThreadController extends AppController
 		$user->user_username = Param::get('user_username');
 		$user->user_email = Param::get('user_email');
 		$user->user_password = Param::get('user_password');
+		$user->user_confirm_password = Param::get('user_confirm_password');
 		try {
-			$user->register();
+			if($user->register()){
+
+			}else{
+				$page = 'register';
+			}
 		} catch (ValidationException $e) {
 			$page = 'register';
 		}
@@ -32,11 +56,6 @@ class ThreadController extends AppController
 			break;
 		}
 		
-
-
-		// $user->hey = "z";
-		// $user->kuke();
-
 		$this->set(get_defined_vars());
 		$this->render($page);
 	}
@@ -100,8 +119,4 @@ class ThreadController extends AppController
 
 	}
 
-	public function hell()
-	{
-
-	}
 }

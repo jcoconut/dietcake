@@ -8,6 +8,7 @@
     <!-- <script src="http://code.jquery.com/jquery.js"></script> -->
     <!-- <script src="/bootstrap/js/bootstrap.min.js"></script> -->
     <link href="/foundation/css/foundation.css" rel="stylesheet">
+    <link href="/custom/custom.css" rel="stylesheet">
     <link href="/foundation/foundation-icons/foundation-icons.css" rel="stylesheet" >
     <style>
       [data-magellan-expedition], [data-magellan-expedition-clone] {
@@ -32,17 +33,17 @@
         <h3>DietCake :<small> The baking</small></h3>
       </div>
 
-      <form method="post" action="<?php eh(url('')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
+      <form method="post" action="<?php eh(url('thread/user_login')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
         <div class="row">
           <div class="small-5 columns">
             <label>Username
-              <input type="text" placeholder="username" style="height:1.31rem;">
+              <input type="text" placeholder="username" name="user_username" style="height:1.31rem;">
             </label>
           </div>
           
           <div class="small-5 columns">
             <label>Password
-             <input type="password" placeholder="password" style="height:1.31rem;">
+             <input type="password" placeholder="password" name="user_password" style="height:1.31rem;">
             </label>
           </div>
           <div class="small-2 columns">
@@ -73,9 +74,9 @@
         <i class="fi-mail"></i>
         <label>Mail</label>
       </a>
-      <a class="item">
+      <a class="item" href="<?php eh(url('thread/register')); ?>">
         <i class="fi-like"></i>
-        <label>Login</label>
+        <label>Register</label>
       </a>
     </div>
   </div>
