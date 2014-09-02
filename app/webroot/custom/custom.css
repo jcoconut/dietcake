@@ -8,5 +8,19 @@
 	color:#CC0000;
 }
 .cus-green{
-	background: #A1CF64;
+	background: #00933B;
+}
+.cus-blue{
+	background: #0266C8;
+}
+.cus-white-text{
+	color:white;
+}
+.cus-shadow{
+text-shadow: 1px 1px 1px #262626;
+}
+.cus-shadowbox{
+	-webkit-box-shadow: 0px 6px 9px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 6px 9px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 6px 9px 0px rgba(0,0,0,0.75);
 }

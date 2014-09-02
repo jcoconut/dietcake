@@ -1,42 +1,94 @@
-<h1><?php eh($thread->title) ?></h1>
-<?php foreach ($comments as $k => $v): ?>
-<div class="comment">
-<div class="meta">
-<?php eh($k + 1) ?>: <?php eh($v->username) ?> <?php eh($v->created) ?>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/styles/monokai_sublime.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<div class="row">
+	<div class="medium-6 small-12 columns">
+		<span class=" clearfix"><?php echo_htmlschars($view_thread['thread_title']) ?></span>
+		<small>by <?php echo($view_thread['user_fname']); ?></small>
+		<a href="" style="color:#555555;" title="Delete thread"><i class="fi-trash cus-shadow"></i></a>
+		<a href="" style="color:#555555;" title="Edit thread"><i class="fi-page-edit"></i></a>
+	</div>
+	<div class="medium-6 small-12 columns text-center">
+		<div class="row">
+			<div class="small-12 medium-6 columns">
+				<?php echo $paginate['on_page']; ?>
+			</div>
+			<div class="small-12 medium-6 columns">
+				<?php echo $paginate['pages']; ?>
+			</div>
+								
+		</div>
+		
+	</div>
 </div>
-<div>
-<?php echo readable_text($v->body) ?>
 
+<div class="row">
+	<?php foreach ($comments as $comment): ?>
+	<div class="panel small-12 columns">
+		<div class="row">
+			<div class="left medium-6 columns">
+				<img class="left" src="http://placecage.com/50/50">
+				<small class=""><?php echo_htmlschars($comment['user_fname']) ?></small><br>
+				<small class="">New Member</small><br>
+
+			</div>
+			<div class="right medium-6 columns">
+			<small class="right"><?php echo_htmlschars($comment['comment_created']) ?></small>
+			
+
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<p><?php echo ($comment['comment_body']) ?></p>
+		</div>
+	</div>
+	<?php endforeach ?>
 </div>
+
+<div class="row">
+	
+	<div class="right medium-6 small-12 columns text-center">
+		<div class="row">
+			<div class="small-12 medium-6 columns">
+				<?php echo $paginate['on_page']; ?>
+			</div>
+			<div class="small-12 medium-6 columns">
+				<?php echo $paginate['pages']; ?>
+			</div>
+								
+		</div>
+		
+	</div>
 </div>
-<?php endforeach ?>
-<hr>
 
+<?php if(check_session('logged_in')): ?>
+<form class="well" method="post" action="<?php echo_htmlschars(url('thread/write_comment')) ?>">
 
-
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3><?php eh($thread->title) ?></h3>
-  </div>
-  <div class="modal-body">
-    <p>This thread has <?php eh(count($comments)); ?> comments!</p>
-  </div>
-  <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal" >Close</a>
-  </div>
-</div>
-<a href="#myModal" role="button" class="btn" data-toggle="modal">Open Information</a>
-
-
-
-<form class="well" method="post" action="<?php eh(url('thread/write')) ?>">
-	<label>Your name</label>
-	<input type="text" class="span2" name="username" value="<?php eh(Param::get('username')) ?>">
 	<label>Comment</label>
-	<textarea name="body"><?php eh(Param::get('body')) ?></textarea>
+	<textarea name="body" id="comment_body"><?php echo_htmlschars(Param::get('body')) ?></textarea>
 	<br />
-	<input type="hidden" name="thread_id" value="<?php eh($thread->id) ?>">
+	<input type="hidden" name="thread_id" value="<?php echo $view_thread['thread_id']; ?>">
 	<input type="hidden" name="page_next" value="write_end">
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>
+<script src="/ck/ckeditor.js"></script>
+<script>
+
+// Replace the <textarea id="editor1"> with a CKEditor
+// instance, using default configuration.              
+CKEDITOR.replace( 'comment_body', {
+
+uiColor: '#5673A0',
+codeSnippet_theme : 'monokai_sublime'
+
+});
+</script>
+<?php else: ?>
+
+
+<div class="small-12 columns panel">
+<p>Please login to leave a comment</p>
+
+</div>
+<?php endif; ?>

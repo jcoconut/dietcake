@@ -5,7 +5,7 @@ function redirect($url)
 }
 
 
-function eh($string)
+function echo_htmlschars($string)
 {
     if (!isset($string)) return;
     echo htmlspecialchars($string, ENT_QUOTES);

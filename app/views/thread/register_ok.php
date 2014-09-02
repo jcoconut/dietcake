@@ -1,9 +1,11 @@
-<div data-alert class="panel cus-green text-center radius small-12 columns">
-  <p class="header">You are successfully registered!<br>
-  You may now login<br>
-  you will be redirected back to home page after <span id="time">5</span> seconds..</p>
-  <?php header( "refresh:5;url=/" ); ?>
- 
+<div style="min-height:480px;">
+  <div data-alert class="panel cus-green cus-shadowbox text-center radius small-12 columns">
+    <p style="color:white;">You are successfully registered!<br>
+    You may now login<br>
+    you will be redirected back to home page after <span id="time">5</span> seconds..</p>
+    <?php header( "refresh:5;url=/" ); ?>
+   
+  </div>
 </div>
 <script language="javascript">
 var max_time = 5;

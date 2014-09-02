@@ -28,3 +28,4 @@ between
 <input type="hidden" name="page_next" value="write_end">
 <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+

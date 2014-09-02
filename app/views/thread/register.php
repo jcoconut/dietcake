@@ -19,7 +19,7 @@
 </div>
 <?php endif ?>
 
-<form class="row panel callout" action="<?php eh(url('')); ?>" method="post">
+<form class="row panel callout" action="<?php echo_htmlschars(url('')); ?>" method="post">
 	<div class="small-12 columns">
 		<div class="row">
 			<h4>Register</h4> <small>Please fill up all fields</small>
@@ -29,11 +29,11 @@
 
 			<div class="medium-6 columns">
 				<?php if (!empty($user->validation_errors['user_fname']['format']) || !empty($user->validation_errors['user_fname']['length'])): ?>
-					<label class="cus-error"><i class="fi-alert"></i>First Name<?php echo ($user->validation_errors['user_fname']['format']); ?>
+					<label class="cus-error"><i class="fi-alert"></i>First Name
 				<?php else: ?>
 					<label>First Name
 				<?php endif; ?>
-					<input type="text" placeholder="Juan" name="user_fname" maxlength='30' value="<?php eh(Param::get('user_fname')) ?>">
+					<input type="text" placeholder="Juan" name="user_fname" maxlength='30' value="<?php echo_htmlschars(Param::get('user_fname')) ?>">
 					</label>
 			</div>
 
@@ -43,7 +43,7 @@
 				<?php else: ?>
 					<label>Last Name
 				<?php endif; ?>
-					<input type="text" placeholder="Dela Cruz" name="user_lname" maxlength='30' value="<?php eh(Param::get('user_lname')) ?>">
+					<input type="text" placeholder="Dela Cruz" name="user_lname" maxlength='30' value="<?php echo_htmlschars(Param::get('user_lname')) ?>">
 					</label>
 			</div>
 
@@ -53,7 +53,7 @@
 				<?php else: ?>
 					<label>Email
 				<?php endif; ?>
-					<input type="email" placeholder="example@sample.com" name="user_email" maxlength='30' value="<?php eh(Param::get('user_email')) ?>">
+					<input type="email" placeholder="example@sample.com" name="user_email" maxlength='30' value="<?php echo_htmlschars(Param::get('user_email')) ?>">
 					</label>
 
 			</div>
@@ -64,7 +64,7 @@
 				<?php else: ?>
 					<label>Username
 				<?php endif; ?>
-					<input type="text" placeholder="jdelacruz" name="user_username" maxlength='30' value="<?php eh(Param::get('user_username')) ?>">
+					<input type="text" placeholder="jdelacruz" name="user_username" maxlength='30' value="<?php echo_htmlschars(Param::get('user_username')) ?>">
 					</label>
 			</div>
 

@@ -1,10 +1,14 @@
 <?php
-function validate_between($check, $min, $max)
+function validate_between($input, $min, $max)
 {
-	$n = mb_strlen($check);
+	$n = mb_strlen($input);
 	return $min <= $n && $n <= $max;
 }
-
+function required($input){
+	if(mb_strlen($input)>0){
+		return true;
+	}
+}
 function alpha_only($string){
 	if(preg_match('/^[A-Za-z\s]+$/',$string)){
 		return true;

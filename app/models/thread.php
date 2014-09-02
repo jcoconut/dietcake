@@ -9,7 +9,7 @@ class Thread extends AppModel
 		),
 	);
 	
-	public function create(Comment $comment)
+	public function create (Comment $comment)
 	{
 		$this->validate();
 		$comment->validate();
@@ -18,30 +18,70 @@ class Thread extends AppModel
 		}
 		$db = DB::conn();
 		$db->begin();
-		$db->query('INSERT INTO thread SET title = ?, created = NOW()', array($this->title));
-		$this->id = $db->lastInsertId();
-		// write first comment at the same time
+		$db->query('INSERT INTO thread SET thread_title = ?, thread_user_id = ?, thread_created = NOW()', array($this->title,$this->user_id));
+		$this->thread_id = $db->lastInsertId();
 		$this->write($comment);
 		$db->commit();
 	}
 
-	public static function getAll()
+	public static function count_threads ()
 	{
-		$threads = array();
+
 		$db = DB::conn();
-		$rows = $db->rows('SELECT * FROM thread');
-		foreach ($rows as $row) {
-			$threads[] = new Thread($row);
+		$count = $db->row("SELECT COUNT(*) as count FROM thread");
+
+		return $count['count'];
+	}
+
+	public function count_comments ()
+	{
+
+		$db = DB::conn();
+		$count = $db->row("SELECT COUNT(*) as count FROM comment WHERE comment_thread_id = ?", array($this->thread_id));
+
+		return $count['count'];
+	}
+
+	public function count_comments_of_threads ($thread_ids)
+	{
+		$thread_comments = array();
+		$db = DB::conn();
+		foreach ($thread_ids as $each_id) {
+			
 		}
-		return $threads;
+		$count = $db->row("SELECT COUNT(*) as count FROM comment WHERE comment_thread_id = ?", array($this->thread_id));
+
+		return $count['count'];
 	}
-	public static function get($id)
+
+	public function getAll ($itemsPerPage)
+	{
+		//sql statements are very long,divided into separate variables
+		$db = DB::conn();
+		$start = ($this->pn - 1) * $itemsPerPage ;
+
+		$comment_counts = "(select count(comment_id) from comment where thread.thread_id = comment.comment_thread_id)";
+		$last_posted = "(select user.user_username from comment left join user on comment.comment_user_id=user.user_id
+		where comment.comment_thread_id=thread.thread_id ORDER BY comment.comment_created DESC  limit 1)";
+
+		$select_statements = "thread.thread_id,thread.thread_title,thread.thread_created,user.user_username,
+		$comment_counts as comment_count,
+		$last_posted as last_posted";
+
+		$rows = $db->rows("SELECT $select_statements FROM thread LEFT JOIN user ON thread.thread_user_id=user.user_id LIMIT $start,$itemsPerPage");
+
+		return $rows;
+	}
+
+	public static function get ($id)
 	{
 		$db = DB::conn();
-		$row = $db->row('SELECT * FROM thread WHERE id = ?', array($id));
-		return new self($row);
+		$row = $db->row('SELECT * FROM thread LEFT JOIN user ON thread.thread_user_id=user.user_id  WHERE thread.thread_id = ?' , array($id));
+		return $row;
+
 	}
-	public function write(Comment $comment)
+
+	public function write (Comment $comment)
 	{	
 		if (!$comment->validate()) {
 		throw new ValidationException('invalid comment');
@@ -49,23 +89,23 @@ class Thread extends AppModel
 
 		$db = DB::conn();
 		$db->query(
-		'INSERT INTO comment SET thread_id = ?, username = ?, body = ?, created = NOW()',
-		array($this->id, $comment->username, $comment->body)
+		'INSERT INTO comment SET comment_thread_id = ?, comment_user_id = ?, comment_body = ?, comment_created = NOW()',
+		array($this->thread_id, $this->user_id, $comment->body)
 		);
 	}
 
-	public function getComments()
+	public function getComments ($thread_id,$itemsPerPage)
 	{
 		$comments = array();
 		$db = DB::conn();
+		$start = ($this->pn - 1) * $itemsPerPage ;
+
 		$rows = $db->rows(
-		'SELECT * FROM comment WHERE thread_id = ? ORDER BY created ASC',
-		array($this->id)
+		"SELECT * FROM comment LEFT JOIN user ON comment.comment_user_id=user.user_id WHERE comment_thread_id = ? ORDER BY comment_created ASC  LIMIT $start,$itemsPerPage",
+		array($thread_id)
 		);
-		foreach ($rows as $row) {
-		$comments[] = new Thread($row);
-		}
-		return $comments;
+	
+		return $rows;
 	}
 
 
