@@ -87,9 +87,9 @@ class ThreadController extends AppController
                 $page = 'register';
             }
                 break;
-                default:
-                    throw new NotFoundException("{$page} is not found");
-            break;
+            default:
+                throw new NotFoundException("{$page} is not found");
+                break;
         }
         
         $this->set(get_defined_vars());
@@ -112,7 +112,7 @@ class ThreadController extends AppController
         {
             case 'create':
 
-            break;
+                break;
 
             case 'create_end':
             $thread->title = Param::get('title');
@@ -125,10 +125,10 @@ class ThreadController extends AppController
                 $page = 'create';
             }
                 redirect(url('thread/view?thread_id='.$thread->thread_id));
-            break;
+                break;
             
-            default:
-                throw new NotFoundException("{$page} is not found");
+        default:
+            throw new NotFoundException("{$page} is not found");
             break;
         }
         $this->set(get_defined_vars());
@@ -183,10 +183,10 @@ class ThreadController extends AppController
             }
             //redirect back to thread
             redirect(url('thread/view?thread_id='.$thread->thread_id));
-            break;  
+                break;  
 
-                default:
-                    throw new NotFoundException("{$page} is not found");
+            default:
+                throw new NotFoundException("{$page} is not found");
                 break;
         }
         $user->autoRender = false;
