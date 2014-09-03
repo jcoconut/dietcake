@@ -58,6 +58,11 @@ class User extends AppModel
         ),
     );
 
+    /*
+    function to call
+    when registering form is submitted
+    checks in database if existing email or username
+    */
     public function register ()
     {
         $this->validate();
@@ -91,6 +96,11 @@ class User extends AppModel
         
     }
 
+    /*
+    updating information
+    of a logged user
+    checks in database if existing email or username
+    */
     public function update_user ()
     {
         $found = "";
@@ -137,6 +147,11 @@ class User extends AppModel
         
     }
     
+    /*
+    changing password of a logged user
+    current password must be correct
+    tries to login again
+    */
     public function password_change ()
     {
     
@@ -169,6 +184,9 @@ class User extends AppModel
         
     }
 
+    /*
+    looks for the input username and password in user table
+    */
     public function login ()
     {
         $db = DB::conn();

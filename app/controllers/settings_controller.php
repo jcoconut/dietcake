@@ -1,6 +1,10 @@
 <?php
 class SettingsController extends AppController
 {
+    /*
+    view and change information of
+    currently logged user
+    */
     public function info ()
     {
         $user = new User();
@@ -36,6 +40,9 @@ class SettingsController extends AppController
         $this->render($page);
     }
     
+    /*password change 
+    
+    */
     public function password_change ()
     {
         $user = new User();

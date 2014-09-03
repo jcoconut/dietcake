@@ -9,6 +9,7 @@ class Thread extends AppModel
         ),
     );
     
+    //function for inserting/creating thread
     public function create (Comment $comment)
     {
         $this->validate();
@@ -26,6 +27,7 @@ class Thread extends AppModel
         $db->commit();
     }
 
+    //count all thread,return int
     public static function count_threads ()
     {
 
@@ -35,6 +37,7 @@ class Thread extends AppModel
         return $count['count'];
     }
 
+    //count all comments of given thread id return int
     public function count_comments ()
     {
 
@@ -45,19 +48,10 @@ class Thread extends AppModel
         return $count['count'];
     }
 
-    public function count_comments_of_threads ($thread_ids)
-    {
-        $thread_comments = array();
-        $db = DB::conn();
-        foreach ($thread_ids as $each_id) {
-            
-        }
-        $count = $db->row("SELECT COUNT(*) as count FROM comment
-        WHERE comment_thread_id = ?", array($this->thread_id));
-
-        return $count['count'];
-    }
-
+    /*
+    get threads = depending
+    on the passed parameter itemsPerPage
+    */
     public function getAll ($itemsPerPage)
     {
         //sql statements are very long,divided into separate variables
@@ -78,6 +72,10 @@ class Thread extends AppModel
         return $rows;
     }
 
+    /*
+    get 1 thread depending
+    on parameter id
+    */
     public static function get ($id)
     {
         $db = DB::conn();
@@ -88,6 +86,9 @@ class Thread extends AppModel
 
     }
 
+    /*
+    insert a new comment
+    */
     public function write (Comment $comment)
     {   
         if (!$comment->validate()) {
@@ -104,6 +105,10 @@ class Thread extends AppModel
         $db->insert("comment",$params);
     }
 
+    /*
+    gets comments of a thread = depending
+    on the passed parameter itemsPerPage
+    */
     public function getComments ($thread_id,$itemsPerPage)
     {
         $comments = array();

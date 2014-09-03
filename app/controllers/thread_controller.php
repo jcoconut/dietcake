@@ -4,7 +4,11 @@ class ThreadController extends AppController
     const THREADS_PER_PAGE = 10;
     const COMMENTS_PER_PAGE = 10;
 
-    //home page/threads
+    /*
+    current homepage
+    gets/shows threads depending
+    on THREADS_PER_PAGE
+    */
     public function index ()
     {
         $thread = new Thread();
@@ -31,6 +35,10 @@ class ThreadController extends AppController
         $this->set(get_defined_vars());
     }
 
+    /*
+    function that handles
+    when login form is submitted
+    */
     public function user_login ()
     {
 
@@ -52,12 +60,21 @@ class ThreadController extends AppController
         exit();
     }
 
+    /*
+    logout and remove/destroy current session
+    */
     public function logout()
     {
         session_destroy();
         redirect(url('/'));
     }
 
+    /*
+    register a new user
+    also the landing page if
+    success or if
+    there are validation errors
+    */
     public function register()
     {
         
@@ -96,6 +113,12 @@ class ThreadController extends AppController
         $this->render($page);
     }
 
+    /*
+    function for creating thread
+    redirect to created thread if
+    validation/input successful
+    else redirect to self
+    */
     public function create ()
     {
         //if not logged in,redirect to homepage
@@ -135,7 +158,10 @@ class ThreadController extends AppController
         $this->render($page);
     }
 
-    //view one thread and all its comments
+    /*
+    view one thread and comments each page
+    depending on COMMENTS_PER_PAGE
+    */
     public function view ()
     {
         $thread = new Thread();
@@ -162,7 +188,10 @@ class ThreadController extends AppController
         $this->set(get_defined_vars());
     }
 
-
+    /*
+    function that handles when
+    writing a comment form is submitted
+    */
     public function write_comment()
     {   
         $thread = new Thread();
