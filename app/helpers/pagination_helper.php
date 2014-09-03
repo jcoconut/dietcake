@@ -40,7 +40,7 @@ class Pagination{
         }
             if ($this->pn == 1)
             {
-                $centerPages .= ' <li class="current"><a href="">' . $this->pn .  '</a></li> ';
+                $centerPages .= ' <li class="current" style="background:#0266C8;"><a href="">' . $this->pn .  '</a></li> ';
                 $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $add1 . '">' . $add1 . '</a></li> ';
             } else if ($this->pn == $this->lastpage) {
                 $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $sub1 . '">' . $sub1 . '</a></li> ';

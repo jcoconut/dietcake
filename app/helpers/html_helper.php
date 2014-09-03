@@ -1,18 +1,18 @@
 <?php
-function redirect($url) 
+function redirect ($url) 
 {
-   header("Location: ".$url);
+    header("Location: ".$url);
 }
 
-
-function echo_htmlschars($string)
+function echo_htmlschars ($string)
 {
     if (!isset($string)) return;
     echo htmlspecialchars($string, ENT_QUOTES);
 }
-function readable_text($s)
+
+function readable_text ($s)
 {
-	$s = htmlspecialchars($s, ENT_QUOTES);
-	$s = nl2br($s);
-	return $s;
+    $s = htmlspecialchars($s, ENT_QUOTES);
+    $s = nl2br($s);
+    return $s;
 }

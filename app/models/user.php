@@ -136,6 +136,7 @@ class User extends AppModel
         }
         
     }
+    
     public function password_change ()
     {
     
