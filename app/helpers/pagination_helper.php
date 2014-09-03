@@ -27,7 +27,7 @@ class Pagination{
     }
 
     //Builds the array containing the links and details
-    public function pageit ()
+    public function pageIt ()
     {
         $centerPages = "";
         $sub1 = $this->pn - 1;

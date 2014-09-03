@@ -12,7 +12,7 @@ class ThreadController extends AppController
     public function index ()
     {
         $thread = new Thread();
-        $thread->pn = Param::get('pn');
+        $thread->pn = Param::get('pn');//page number(GET variable)
         $page ="";
         //if no page is set,set pn(page number) to 1
         if(!isset($thread->pn) || !is_numeric($thread->pn) )
@@ -22,8 +22,8 @@ class ThreadController extends AppController
 
         $threads = $thread->getAll(self::THREADS_PER_PAGE);
         if(count($threads)>0){
-            $page = new Pagination(Thread::count_threads(),self::THREADS_PER_PAGE);
-            $paginate = $page->pageit();
+            $page = new Pagination(Thread::count_threads(), self::THREADS_PER_PAGE);
+            $paginate = $page->pageIt();
         }
         
         //if there threads but method did not return any threads
@@ -39,7 +39,7 @@ class ThreadController extends AppController
     function that handles
     when login form is submitted
     */
-    public function user_login ()
+    public function userLogin ()
     {
 
         $user = new User();
@@ -47,13 +47,14 @@ class ThreadController extends AppController
         $user->user_password = Param::get('user_password');
         $logged_user = $user->login();
         
-        if($user->login()){
+        if ($user->login() )
+        {
             session_start();
-            add_session('logged_in',$logged_user);
+            addSession('logged_in',$logged_user);
             redirect(url('/'));
 
-        }else{
-            flash( 'login_failed', 'Login credentials invalid!' ); 
+        } else {
+            flashMessage( 'login_failed', 'Login credentials invalid!' ); 
             redirect(url('/'));
         }
         $user->autoRender = false;
@@ -63,7 +64,7 @@ class ThreadController extends AppController
     /*
     logout and remove/destroy current session
     */
-    public function logout()
+    public function logOut()
     {
         session_destroy();
         redirect(url('/'));
@@ -75,34 +76,35 @@ class ThreadController extends AppController
     success or if
     there are validation errors
     */
-    public function register()
+    public function registerUser()
     {
         
         $user = new User();
-        $page = Param::get('page_next', 'register');
+        $page = Param::get('page_next', 'registeruser');
         switch ($page) {
 
-            case 'register':
+            case 'registeruser':
 
-            break;
+                break;
 
             case 'register_ok': 
-            $user->user_fname = Param::get('user_fname');
-            $user->user_lname = Param::get('user_lname');
-            $user->user_username = Param::get('user_username');
-            $user->user_email = Param::get('user_email');
-            $user->user_password = Param::get('user_password');
-            $user->user_confirm_password = Param::get('user_confirm_password');
-            try {
-                //if validations are ok
-                if($user->register()){
+                $user->user_fname = Param::get('user_fname');
+                $user->user_lname = Param::get('user_lname');
+                $user->user_username = Param::get('user_username');
+                $user->user_email = Param::get('user_email');
+                $user->user_password = Param::get('user_password');
+                $user->user_confirm_password = Param::get('user_confirm_password');
+                try {
+                    //if validations are ok
+                    if ($user->register() )
+                    {
 
-                }else{ //if not redirect to self
-                    $page = 'register';
+                    } else { //if not redirect to self
+                        $page = 'registeruser';
+                    }
+                } catch (ValidationException $e) {
+                    $page = 'registeruser';
                 }
-            } catch (ValidationException $e) {
-                $page = 'register';
-            }
                 break;
             default:
                 throw new NotFoundException("{$page} is not found");
@@ -119,10 +121,10 @@ class ThreadController extends AppController
     validation/input successful
     else redirect to self
     */
-    public function create ()
+    public function createThread ()
     {
         //if not logged in,redirect to homepage
-        if(!check_session('logged_in'))
+        if(!checkSession('logged_in'))
         {
             redirect(url('/'));
         }
@@ -139,7 +141,7 @@ class ThreadController extends AppController
 
             case 'create_end':
             $thread->title = Param::get('title');
-            $thread->user_id = get_session('logged_in','user_id');
+            $thread->user_id = get_session('logged_in', 'user_id');
             $comment->body = Param::get('body');
             
             try {
@@ -147,12 +149,12 @@ class ThreadController extends AppController
             } catch (ValidationException $e) {
                 $page = 'create';
             }
-                redirect(url('thread/view?thread_id='.$thread->thread_id));
+                redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
                 break;
             
-        default:
-            throw new NotFoundException("{$page} is not found");
-            break;
+            default:
+                throw new NotFoundException("{$page} is not found");
+                break;
         }
         $this->set(get_defined_vars());
         $this->render($page);
@@ -162,26 +164,28 @@ class ThreadController extends AppController
     view one thread and comments each page
     depending on COMMENTS_PER_PAGE
     */
-    public function view ()
+    public function viewThread ()
     {
         $thread = new Thread();
         $thread->pn = Param::get('pn');
 
         //if no page is set,set pn(page number) to 1
-        if(!isset($thread->pn) || !is_numeric($thread->pn) ){
+        if (!isset($thread->pn) || !is_numeric($thread->pn) )
+        {
             $thread->pn = 1;
         }
 
         $view_thread = $thread->get(Param::get('thread_id'));
         $thread->thread_id = $view_thread['thread_id'];
-        $comments = $thread->getComments($thread->thread_id,self::COMMENTS_PER_PAGE);
+        $comments = $thread->getComments($thread->thread_id, self::COMMENTS_PER_PAGE);
         
-        $page = new Pagination($thread->count_comments(),self::COMMENTS_PER_PAGE,array("thread_id=$thread->thread_id"));
-        $paginate = $page->pageit();
+        $page = new Pagination($thread->count_comments(), self::COMMENTS_PER_PAGE, array("thread_id=$thread->thread_id"));
+        $paginate = $page->pageIt();
         
         //if there threads but method did not return any threads
         //this is for pages that do not exist
-        if($thread->count_comments() > 0 && count($comments) == 0){
+        if ($thread->count_comments() > 0 && count($comments) == 0)
+        {
             $threads = "not exist";
         }
 
@@ -192,12 +196,12 @@ class ThreadController extends AppController
     function that handles when
     writing a comment form is submitted
     */
-    public function write_comment()
+    public function writeComment()
     {   
         $thread = new Thread();
         $thread->thread_id = Param::get('thread_id');
     
-        $thread->user_id = get_session('logged_in','user_id');
+        $thread->user_id = get_session('logged_in', 'user_id');
         $comment = new Comment;
         $page = Param::get('page_next', 'write');
         switch ($page) {
@@ -211,7 +215,7 @@ class ThreadController extends AppController
                 $page = 'write';
             }
             //redirect back to thread
-            redirect(url('thread/view?thread_id='.$thread->thread_id));
+            redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
                 break;  
 
             default:

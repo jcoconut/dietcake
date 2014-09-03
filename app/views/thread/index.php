@@ -3,8 +3,8 @@
 
 			<div class="row">
 				<div class="medium-6 small-12 columns">
-					<?php if(check_session('logged_in')): ?>
-						<a class="button tiny secondary" href="<?php echo_htmlschars(url('thread/create')) ?>"><i class="fi-plus"></i> Post New Thread</a>
+					<?php if(checkSession('logged_in')): ?>
+						<a class="button tiny secondary" href="<?php echo_htmlschars(url('thread/createthread')) ?>"><i class="fi-plus"></i> Post New Thread</a>
 					<?php else: ?>
 						<small>Login or Register to Post a Thread</small>
 					<?php endif; ?>
@@ -42,7 +42,7 @@
 				<div class="row panel" style="padding:0px;"  data-equalizer>
 					<div class="medium-8 small-12 columns" data-equalizer-watch>
 						<i class="left fi-folder" style="max-height:30px;color:#DDA000;">&nbsp;</i>
-						<a class=" truncate"href="<?php echo_htmlschars(url('thread/view', array('thread_id' => $thread['thread_id']))) ?>">
+						<a class=" truncate"href="<?php echo_htmlschars(url('thread/viewthread', array('thread_id' => $thread['thread_id']))) ?>">
 							
 							<span class="left">
 								<?php echo_htmlschars($thread['thread_title']) ?><br>
@@ -73,8 +73,8 @@
 			</div>
 			<div class="row">
 				<div class="medium-6 small-12 columns">
-					<?php if(check_session('logged_in')): ?>
-						<a class="button tiny secondary" href="<?php echo_htmlschars(url('thread/create')) ?>"><i class="fi-plus"></i> Post New Thread</a>
+					<?php if(checkSession('logged_in')): ?>
+						<a class="button tiny secondary" href="<?php echo_htmlschars(url('thread/createthread')) ?>"><i class="fi-plus"></i> Post New Thread</a>
 					<?php else: ?>
 						<small>Login or Register to Post a Thread</small>
 					<?php endif; ?>
@@ -99,7 +99,7 @@
 			<div class="small-12 columns panel text-center" style="min-height:400px;">
 				<h3 class="clearfix">Page does not exist!</h3>
 				<h1 class="header clearfix">:(</h1>
-				<p><a href="<?php echo_htmlschars(url('thread/create')) ?>"><kbd><i class="fi-plus"></i> Add</kbd></a> a thread now!</p>
+				<p><a href="<?php echo_htmlschars(url('thread/createthread')) ?>"><kbd><i class="fi-plus"></i> Add</kbd></a> a thread now!</p>
 			</div>
 		</div>
 
@@ -110,8 +110,8 @@
 				<h3 class="clearfix">There are no threads yet!</h3>
 				<h1 class="header clearfix">:(</h1>
 
-				<?php if(check_session('logged_in')): ?>
-					<p><a href="<?php echo_htmlschars(url('thread/create')) ?>"><kbd><i class="fi-plus"></i> Add</kbd></a> a thread now!</p>
+				<?php if(checkSession('logged_in')): ?>
+					<p><a href="<?php echo_htmlschars(url('thread/createthread')) ?>"><kbd><i class="fi-plus"></i> Add</kbd></a> a thread now!</p>
 				<?php else: ?>
 					<p><a href="<?php echo_htmlschars(url('thread/register')) ?>"><kbd><i class="fi-plus"></i> Register</kbd></a>to add a thread</p>
 				<?php endif; ?>

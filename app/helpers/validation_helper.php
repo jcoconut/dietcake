@@ -1,10 +1,12 @@
 <?php
-function validate_between ($input, $min, $max)
+// checks if input is in between min or max characters
+function is_between ($input, $min, $max)
 {
     $n = mb_strlen($input);
     return $min <= $n && $n <= $max;
 }
 
+//checks if length = 0 (empty)
 function required ($input)
 {
     if(mb_strlen($input)>0){
@@ -12,7 +14,8 @@ function required ($input)
     }
 }
 
-function alpha_only ($string)
+//checks if string is alpha only
+function is_alpha ($string)
 {
     if(preg_match('/^[A-Za-z\s]+$/',$string)){
         return true;
@@ -21,6 +24,7 @@ function alpha_only ($string)
     }
 }
 
+//checks if strings are same
 function is_same ($string1,$string2)
 {
     if($string1==$string2){
@@ -30,6 +34,7 @@ function is_same ($string1,$string2)
     }
 }
 
+//checks if string is valid email
 function is_email ($email)
 {
 

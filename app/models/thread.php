@@ -4,7 +4,7 @@ class Thread extends AppModel
     public $validation = array(
         'title' => array(
             'length' => array(
-                'validate_between', 1, 30,
+                'is_between', 1, 30,
             ),
         ),
     );
@@ -14,14 +14,15 @@ class Thread extends AppModel
     {
         $this->validate();
         $comment->validate();
-        if ($this->hasError() || $comment->hasError()) {
-        throw new ValidationException('invalid thread or comment');
+        if ($this->hasError() || $comment->hasError())
+        {
+            throw new ValidationException('invalid thread or comment');
         }
         $db = DB::conn();
         $db->begin();
         
         $db->query('INSERT INTO thread SET thread_title = ?, thread_user_id = ?, thread_created = NOW()',
-        array($this->title,$this->user_id));
+        array($this->title, $this->user_id));
         $this->thread_id = $db->lastInsertId();
         $this->write($comment);
         $db->commit();
@@ -33,7 +34,6 @@ class Thread extends AppModel
 
         $db = DB::conn();
         $count = $db->row("SELECT COUNT(*) as count FROM thread");
-
         return $count['count'];
     }
 
@@ -44,7 +44,6 @@ class Thread extends AppModel
         $db = DB::conn();
         $count = $db->row("SELECT COUNT(*) as count FROM comment
         WHERE comment_thread_id = ?", array($this->thread_id));
-
         return $count['count'];
     }
 
@@ -91,8 +90,9 @@ class Thread extends AppModel
     */
     public function write (Comment $comment)
     {   
-        if (!$comment->validate()) {
-        throw new ValidationException('invalid comment');
+        if (!$comment->validate())
+        {
+            throw new ValidationException('invalid comment');
         }
 
         $db = DB::conn();

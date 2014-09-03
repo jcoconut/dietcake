@@ -1,10 +1,10 @@
 <?php
-function add_session ($sess_name,$sess_var)
+function addSession ($sess_name,$sess_var)
 {
     return $_SESSION[$sess_name] = $sess_var;
 }
 
-function check_session ($sess_name){
+function checkSession ($sess_name){
     if(isset($_SESSION[$sess_name])){
         return true;
     }else{
@@ -14,13 +14,13 @@ function check_session ($sess_name){
 
 function get_session ($sess_name , $sess_var)
 {
-    if(check_session($sess_name)){
+    if(checkSession($sess_name)){
         return $_SESSION[$sess_name][$sess_var];   
     }
     
 }
 
-function flash ( $name = '', $message = '', $class = 'alert', $tag = 'p' )
+function flashMessage ( $name = '', $message = '', $class = 'alert', $tag = 'p' )
 {
     //We can only do something if the name isn't empty
     if( !empty( $name ) )

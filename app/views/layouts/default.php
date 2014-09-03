@@ -33,10 +33,10 @@
         <h3>KIThub <small> Klab Intriguing Threads</small></h3>
       </div>
 
-      <?php flash('login_failed'); ?>
+      <?php flashMessage('login_failed'); ?>
       
-      <?php if(!check_session('logged_in')): ?>
-      <form method="post" action="<?php echo_htmlschars(url('thread/user_login')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
+      <?php if(!checkSession('logged_in')): ?>
+      <form method="post" action="<?php echo_htmlschars(url('thread/userlogin')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
         <div class="row">
           <div class="small-5 columns" id="username_container">
             <label>Username
@@ -92,13 +92,13 @@
         <i class="fi-mail"></i>
         <label>Nothing here</label>
       </a>
-      <?php if(check_session('logged_in')): ?>
-      <a class="item" href="<?php echo_htmlschars(url('settings/info')); ?>">
+      <?php if(checkSession('logged_in')): ?>
+      <a class="item" href="<?php echo_htmlschars(url('settings/userinfo')); ?>">
         <i class="fi-wrench"></i>
         <label>Settings</label>
       </a>
       <?php else: ?>
-      <a class="item" href="<?php echo_htmlschars(url('thread/register')); ?>">
+      <a class="item" href="<?php echo_htmlschars(url('thread/registeruser')); ?>">
         <i class="fi-like"></i>
         <label>Register</label>
       </a>
