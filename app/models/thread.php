@@ -18,7 +18,9 @@ class Thread extends AppModel
 		}
 		$db = DB::conn();
 		$db->begin();
-		$db->query('INSERT INTO thread SET thread_title = ?, thread_user_id = ?, thread_created = NOW()', array($this->title,$this->user_id));
+		
+		$db->query('INSERT INTO thread SET thread_title = ?, thread_user_id = ?, thread_created = NOW()',
+		array($this->title,$this->user_id));
 		$this->thread_id = $db->lastInsertId();
 		$this->write($comment);
 		$db->commit();
@@ -37,7 +39,8 @@ class Thread extends AppModel
 	{
 
 		$db = DB::conn();
-		$count = $db->row("SELECT COUNT(*) as count FROM comment WHERE comment_thread_id = ?", array($this->thread_id));
+		$count = $db->row("SELECT COUNT(*) as count FROM comment
+		WHERE comment_thread_id = ?", array($this->thread_id));
 
 		return $count['count'];
 	}
@@ -49,7 +52,8 @@ class Thread extends AppModel
 		foreach ($thread_ids as $each_id) {
 			
 		}
-		$count = $db->row("SELECT COUNT(*) as count FROM comment WHERE comment_thread_id = ?", array($this->thread_id));
+		$count = $db->row("SELECT COUNT(*) as count FROM comment
+		WHERE comment_thread_id = ?", array($this->thread_id));
 
 		return $count['count'];
 	}
@@ -68,7 +72,8 @@ class Thread extends AppModel
 		$comment_counts as comment_count,
 		$last_posted as last_posted";
 
-		$rows = $db->rows("SELECT $select_statements FROM thread LEFT JOIN user ON thread.thread_user_id=user.user_id LIMIT $start,$itemsPerPage");
+		$rows = $db->rows("SELECT $select_statements FROM thread
+		LEFT JOIN user ON thread.thread_user_id=user.user_id LIMIT $start,$itemsPerPage");
 
 		return $rows;
 	}
@@ -76,7 +81,9 @@ class Thread extends AppModel
 	public static function get ($id)
 	{
 		$db = DB::conn();
-		$row = $db->row('SELECT * FROM thread LEFT JOIN user ON thread.thread_user_id=user.user_id  WHERE thread.thread_id = ?' , array($id));
+		$row = $db->row('SELECT * FROM thread
+		LEFT JOIN user ON thread.thread_user_id=user.user_id
+		WHERE thread.thread_id = ?' , array($id));
 		return $row;
 
 	}
@@ -88,10 +95,13 @@ class Thread extends AppModel
 		}
 
 		$db = DB::conn();
-		$db->query(
-		'INSERT INTO comment SET comment_thread_id = ?, comment_user_id = ?, comment_body = ?, comment_created = NOW()',
-		array($this->thread_id, $this->user_id, $comment->body)
-		);
+		$params = array(
+			"comment_thread_id" => $this->thread_id,
+			"comment_user_id" => $this->user_id,
+			"comment_body" => $comment->body,
+			
+			);
+		$db->insert("comment",$params);
 	}
 
 	public function getComments ($thread_id,$itemsPerPage)
@@ -101,7 +111,10 @@ class Thread extends AppModel
 		$start = ($this->pn - 1) * $itemsPerPage ;
 
 		$rows = $db->rows(
-		"SELECT * FROM comment LEFT JOIN user ON comment.comment_user_id=user.user_id WHERE comment_thread_id = ? ORDER BY comment_created ASC  LIMIT $start,$itemsPerPage",
+		"SELECT * FROM comment
+		LEFT JOIN user ON comment.comment_user_id=user.user_id
+		WHERE comment_thread_id = ? ORDER BY comment_created ASC
+		LIMIT $start,$itemsPerPage",
 		array($thread_id)
 		);
 	

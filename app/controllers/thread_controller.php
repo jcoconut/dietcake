@@ -181,6 +181,7 @@ class ThreadController extends AppController
 			} catch (ValidationException $e) {
 				$page = 'write';
 			}
+			//redirect back to thread
 			redirect(url('thread/view?thread_id='.$thread->thread_id));
 			break;	
 

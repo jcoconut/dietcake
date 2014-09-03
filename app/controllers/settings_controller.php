@@ -35,6 +35,7 @@ class SettingsController extends AppController
 		$this->set(get_defined_vars());
 		$this->render($page);
 	}
+	
 	public function password_change ()
 	{
 		$user = new User();
@@ -44,17 +45,18 @@ class SettingsController extends AppController
 		case 'password_change':
 		break;
 		case 'info_ok':
-		
-		$user->user_password = Param::get('user_password');
+		$user->user_username = get_session('logged_in','user_username');
+		$user->user_new_password = Param::get('user_new_password');
 		$user->user_confirm_password = Param::get('user_confirm_password');
+		$user->user_password = Param::get('user_password');
 		try {
-			if($user->register()){
+			if($user->password_change()){
 
 			}else{
-				$page = 'info';
+				$page = 'password_change';
 			}
 		} catch (ValidationException $e) {
-			$page = 'info';
+			$page = 'password_change';
 		}
 			break;
 			default:
