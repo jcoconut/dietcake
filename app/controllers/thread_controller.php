@@ -15,13 +15,12 @@ class ThreadController extends AppController
         $thread->page_num = Param::get('page_num');//page number(GET variable)
         $page ="";
         //if no page is set,set page_num(page number) to 1
-        if(!($thread->page_num) || !is_numeric($thread->page_num) )
-        {
+        if (!($thread->page_num) || !is_numeric($thread->page_num) ) {
             $thread->page_num = 1;
         }
 
         $threads = $thread->getAll(self::THREADS_PER_PAGE);
-        if(count($threads)>0){
+        if (count($threads)>0) {
             $page = new Pagination();
             $page->total_rows = Thread::count_threads();
             $page->per_page = self::THREADS_PER_PAGE;
@@ -30,8 +29,7 @@ class ThreadController extends AppController
         
         //if there threads but method did not return any threads
         //this is for pages that do not exist
-        if(Thread::count_threads() > 0 && count($threads) == 0)
-        {
+        if (Thread::count_threads() > 0 && count($threads) == 0) {
             $threads = "not exist";
         }
         $this->set(get_defined_vars());
@@ -49,8 +47,7 @@ class ThreadController extends AppController
         $user->user_password = Param::get('user_password');
         $logged_user = $user->login();
         
-        if ($user->login() )
-        {
+        if ($user->login() ) {
             session_start();
             addSession('logged_in',$logged_user);
             redirect(url('/'));
@@ -98,8 +95,7 @@ class ThreadController extends AppController
                 $user->user_confirm_password = Param::get('user_confirm_password');
                 try {
                     //if validations are ok
-                    if ($user->register() )
-                    {
+                    if ($user->register()) {
 
                     } else { //if not redirect to self
                         $page = 'registeruser';
@@ -126,8 +122,7 @@ class ThreadController extends AppController
     public function createThread ()
     {
         //if not logged in,redirect to homepage
-        if(!checkSession('logged_in'))
-        {
+        if (!checkSession('logged_in')) {
             redirect(url('/'));
         }
 
@@ -147,8 +142,7 @@ class ThreadController extends AppController
                 $comment->body = Param::get('body');
                 
                 try {
-                     if ( $thread->create($comment) )
-                    {
+                    if ( $thread->create($comment) ) {
                         redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
                     } else { //if not redirect to self
                         $page = 'create';
@@ -178,8 +172,7 @@ class ThreadController extends AppController
         $thread->page_num = Param::get('page_num');
 
         //if no page is set,set page_num(page number) to 1
-        if (!isset($thread->page_num) || !is_numeric($thread->page_num) )
-        {
+        if (!isset($thread->page_num) || !is_numeric($thread->page_num) ) {
             $thread->page_num = 1;
         }
 
@@ -194,8 +187,7 @@ class ThreadController extends AppController
         $paginate = $page->pageIt();
         //if there threads but method did not return any threads
         //this is for pages that do not exist
-        if ($thread->count_comments() > 0 && count($comments) == 0)
-        {
+        if ($thread->count_comments() > 0 && count($comments) == 0) {
             $threads = "not exist";
         }
 

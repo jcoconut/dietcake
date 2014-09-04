@@ -13,8 +13,7 @@ class Thread extends AppModel
     public function create (Comment $comment)
     {
        
-        if ( !$this->validate()|| !$comment->validate() )
-        {
+        if ( !$this->validate()|| !$comment->validate() ) {
             throw new ValidationException('invalid thread or comment');
         }
         $db = DB::conn();
@@ -88,8 +87,7 @@ class Thread extends AppModel
     */
     public function write (Comment $comment)
     {   
-        if (!$comment->validate())
-        {
+        if (!$comment->validate()) {
             throw new ValidationException('invalid comment');
         }
 
