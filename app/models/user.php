@@ -60,9 +60,9 @@ class User extends AppModel
     */
     public function register ()
     {
-        $this->validate();
+       
         $this->password_match = is_same($this->user_password,$this->user_confirm_password);
-        if ($this->hasError() || ($this->password_match==false))
+        if (!$this->validate() || ($this->password_match==false))
         {
             throw new ValidationException('invalid');
         }
@@ -91,17 +91,17 @@ class User extends AppModel
         
     }
 
-
     /*
     looks for the input username and password in user table
+    returns the row if found
     */
     public function login ()
     {
         $db = DB::conn();
         $db->begin();
         $loguser = $db->row('SELECT * FROM user
-        WHERE user_username = ? AND user_password = ?' ,
-        array($this->user_username,md5(sha1($this->user_password))));
+            WHERE user_username = ? AND user_password = ?' ,
+            array($this->user_username,md5(sha1($this->user_password))));
         
         if($loguser)
         {

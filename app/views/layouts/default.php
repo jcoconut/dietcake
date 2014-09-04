@@ -32,7 +32,7 @@
       <div class="medium-6 columns small-12">
         <h3>KIThub <small> Klab Intriguing Threads</small></h3>
       </div>
-
+      
       <?php flashMessage('login_failed'); ?>
       
       <?php if(!checkSession('logged_in')): ?>

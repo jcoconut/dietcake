@@ -1,60 +1,100 @@
 <?php
-class Pagination{
-    
-    public $total_rows;
-    public $per_page;
-    public $custom;
-    public $pn;
-    public $lastpage;
-    public $extra_query;
+class Pagination {
 
-    public function __construct ($total_rows,$per_page,$extra_query = null,$custom = null)
+    /*
+    how many records in total
+    @type int
+    */
+    public $total_rows;
+
+    /*
+    how many records/row to show per page
+    @type int
+    */
+    public $per_page;
+
+     /*
+    html tag to use for
+    container of page links
+    @type string
+    */
+    public $list_tag = "ul";
+
+    /*
+    html tag to use for page link
+    @type string
+    */
+    public $page_tag = "li";
+    
+    /*
+    class name of current page
+    */
+
+    public $onpage_class = "current";
+    /*
+    page number
+    @type int
+    */
+    public $page_num;
+
+    /*
+    last pate
+    @type int
+    */
+    public $lastpage;
+
+    /*
+    used for having for than 1 get params
+    to put in making href links
+    */
+    public $extra_query = null;
+
+    public function initialize ()
     {
-        $this->total_rows = $total_rows;
-        $this->per_page = $per_page;
-        $this->extra_query = $extra_query;
+       
         $this->lastpage = ceil($this->total_rows / $this->per_page);
-        if (isset($_GET['pn'])) { // Get pn from URL vars if it is present
-            $this->pn = preg_replace('#[^0-9]#i', '', $_GET['pn']); // filter everything but numbers for security(new)
-        } else { // If the pn URL variable is not present force it to be value of page number 1
-            $this->pn = 1;
+        if (isset($_GET['page_num'])) { // Get page_num from URL vars if it is present
+            $this->page_num = preg_replace('#[^0-9]#i', '', $_GET['page_num']); // filter everything but numbers for security(new)
+        } else { // If the page_num URL variable is not present force it to be value of page number 1
+            $this->page_num = 1;
         } 
-        if ($this->pn < 1) { // If it is less than 1
-            $this->pn = 1; // force if to be 1
-        } else if ($this->pn > $this->lastpage) { // if it is greater than $this->lastpage
-            $this->pn = $this->lastpage; // force it to be $this->lastpage's value
+        if ($this->page_num < 1) { // If it is less than 1
+            $this->page_num = 1; // force it to be 1
+        } else if ($this->page_num > $this->lastpage) { // if it is greater than $this->lastpage
+            $this->page_num = $this->lastpage; // force it to be $this->lastpage's value
         } 
     }
 
     //Builds the array containing the links and details
     public function pageIt ()
     {
-        $centerPages = "";
-        $sub1 = $this->pn - 1;
-        $sub2 = $this->pn - 2;
-        $add1 = $this->pn + 1;
-        $add2 = $this->pn + 2;
+        $this->initialize();
+        $num_pages = "";
+        $sub1 = $this->page_num - 1;
+        $sub2 = $this->page_num - 2;
+        $add1 = $this->page_num + 1;
+        $add2 = $this->page_num + 2;
         $added_query = "?";
         foreach ((array)$this->extra_query as $eachquery) {
-          $added_query .="{$eachquery}&";
+            $added_query .="{$eachquery}&";
         }
-            if ($this->pn == 1)
+            if ($this->page_num == 1)
             {
-                $centerPages .= ' <li class="current" style="background:#0266C8;"><a href="">' . $this->pn .  '</a></li> ';
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $add1 . '">' . $add1 . '</a></li> ';
-            } else if ($this->pn == $this->lastpage) {
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $sub1 . '">' . $sub1 . '</a></li> ';
-                $centerPages .= ' <li class="current"><a href="">' . $this->pn .  '</a></li> ';
-            } else if ($this->pn > 2 && $this->pn < ($this->lastpage - 1)) {
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $sub2 . '">' . $sub2 . '</a></li> ';
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $sub1 . '">' . $sub1 . '</a></li> ';
-                $centerPages .= ' <li class="current"><a href="">' . $this->pn .  '</a></li> ';
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $add1 . '">' . $add1 . '</a></li> ';
-                $centerPages .= ' <li><a href="'  . $added_query . $add2 . 'pn=' . '">' . $add2 . '</a></li> ';
-            } else if ($this->pn > 1 && $this->pn < $this->lastpage) {
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $sub1 . '">' . $sub1 . '</a></li> ';
-                $centerPages .= ' <li class="current"><a href="">' . $this->pn .  '</a></li> ';
-                $centerPages .= ' <li><a href="'  . $added_query . 'pn=' . $add1 . '">' . $add1 . '</a></li> ';
+                $num_pages .= '<li class="'.$this->onpage_class.'"><a href="">'.$this->page_num.'</a></li> ';
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$add1.'">'.$add1.'</a></li> ';
+            } else if ($this->page_num == $this->lastpage) {
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$sub1.'">'.$sub1.'</a></li> ';
+                $num_pages .= '<li class="'.$this->onpage_class.'"><a href="">'.$this->page_num. '</a></li> ';
+            } else if ($this->page_num > 2 && $this->page_num < ($this->lastpage - 1)) {
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$sub2.'">'.$sub2.'</a></li> ';
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$sub1.'">'.$sub1.'</a></li> ';
+                $num_pages .= '<li class="'.$this->onpage_class.'"><a href="">'.$this->page_num. '</a></li> ';
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$add1.'">'.$add1.'</a></li> ';
+                $num_pages .= '<li><a href="'.$added_query.$add2.'page_num='.'">'.$add2.'</a></li> ';
+            } else if ($this->page_num > 1 && $this->page_num < $this->lastpage) {
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$sub1.'">'.$sub1.'</a></li> ';
+                $num_pages .= '<li class="'.$this->onpage_class.'"><a href="">'.$this->page_num. '</a></li> ';
+                $num_pages .= '<li><a href="'.$added_query.'page_num='.$add1.'">'.$add1.'</a></li> ';
             }
 
         
@@ -66,20 +106,21 @@ class Pagination{
         if ($this->lastpage != "1")
         {
            
-            $what_page .= ' <small>On page ' . $this->pn .  ' of ' . $this->lastpage .'</small> ';
+            $what_page .= ' <small>On page '.$this->page_num. ' of '.$this->lastpage .'</small> ';
 
             // If not on 1st page show previous page button
-            if ($this->pn != 1) {
-                $previous = $this->pn - 1;
-                $left =  '  <li class=""><a href="'  . '?pn=' . $previous . '"> &laquo;</a></li> ';
+            if ($this->page_num != 1) {
+                $previous = $this->page_num - 1;
+                $left =  '  <li class=""><a href="'.'?page_num='.$previous.'"> &laquo;</a></li> ';
             }     
             // If not on last page show next page button
-            if ($this->pn != $this->lastpage) {
-                $nextPage = $this->pn + 1;
-                $right =  ' <li class=""><a href="'  . '?pn=' . $nextPage . '"> &raquo;</a></li> ';
+            if ($this->page_num != $this->lastpage) {
+                $nextPage = $this->page_num + 1;
+                $right =  ' <li class=""><a href="'.'?page_num='.$nextPage.'"> &raquo;</a></li> ';
             } 
-             $pages .= '<ul class="pagination">' .$left. $centerPages . $right . '</ul>';
+             $pages .= '<ul class="pagination">' .$left. $num_pages.$right.'</ul>';
         }
+
         $pagination = array();
         $pagination['pages']= $pages;
         $pagination['total_items'] = $this->total_rows;

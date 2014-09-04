@@ -7,10 +7,10 @@
 	<div data-alert class="alert-box warning radius" style="padd	ing:1px;background:#EEE;color:#333;">
 		<h5 class="alert-heading"><i class="fi-alert" style="font-size:2rem;"></i> Oops..</h5>
 
-		<?php if (!empty($thread->validation_errors['title']['length'])): ?>
+		<?php if (!empty($thread->validation_errors['thread_title']['length'])): ?>
 			<span class="sub-header clearfix">Title must be between
-				<?php echo_htmlschars($thread->validation['title']['length'][1]) ?> and
-				<?php echo_htmlschars($thread->validation['title']['length'][2]) ?> characters in length!
+				<?php echo_htmlschars($thread->validation['thread_title']['length'][1]) ?> and
+				<?php echo_htmlschars($thread->validation['thread_title']['length'][2]) ?> characters in length!
 			</span>
 		<?php endif ?>
 		
@@ -30,7 +30,7 @@
 
 <form class="well" method="post" action="<?php echo_htmlschars(url('')) ?>">
 	<label>Title</label>
-	<input type="text" class="span2" name="title" value="<?php echo_htmlschars(Param::get('title')) ?>">
+	<input type="text" class="span2" name="title" value="<?php echo_htmlschars(Param::get('thread_title')) ?>">
 	<label>Comment</label>
 	<textarea name="body" id="thread_body"><?php echo_htmlschars(Param::get('body')) ?></textarea>
 	<br />

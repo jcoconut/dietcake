@@ -2,7 +2,7 @@
 class Thread extends AppModel
 {
     public $validation = array(
-        'title' => array(
+        'thread_title' => array(
             'length' => array(
                 'is_between', 1, 30,
             ),
@@ -12,9 +12,8 @@ class Thread extends AppModel
     //function for inserting/creating thread
     public function create (Comment $comment)
     {
-        $this->validate();
-        $comment->validate();
-        if ($this->hasError() || $comment->hasError())
+       
+        if ( !$this->validate()|| !$comment->validate() )
         {
             throw new ValidationException('invalid thread or comment');
         }
@@ -22,7 +21,7 @@ class Thread extends AppModel
         $db->begin();
         
         $db->query('INSERT INTO thread SET thread_title = ?, thread_user_id = ?, thread_created = NOW()',
-        array($this->title, $this->user_id));
+        array($this->thread_title, $this->user_id));
         $this->thread_id = $db->lastInsertId();
         $this->write($comment);
         $db->commit();
@@ -49,13 +48,13 @@ class Thread extends AppModel
 
     /*
     get threads = depending
-    on the passed parameter itemsPerPage
+    on the passed parameter records_per_page
     */
-    public function getAll ($itemsPerPage)
+    public function getAll ($records_per_page)
     {
         //sql statements are very long,divided into separate variables
         $db = DB::conn();
-        $start = ($this->pn - 1) * $itemsPerPage ;
+        $start = ($this->page_num - 1) * $records_per_page ;
 
         $comment_counts = "(select count(comment_id) from comment where thread.thread_id = comment.comment_thread_id)";
         $last_posted = "(select user.user_username from comment left join user on comment.comment_user_id=user.user_id
@@ -65,7 +64,7 @@ class Thread extends AppModel
             $comment_counts as comment_count, $last_posted as last_posted";
 
         $rows = $db->rows("SELECT $select_statements FROM thread
-            LEFT JOIN user ON thread.thread_user_id=user.user_id LIMIT $start,$itemsPerPage");
+            LEFT JOIN user ON thread.thread_user_id=user.user_id ORDER BY thread.thread_created DESC LIMIT $start,$records_per_page");
 
         return $rows;
     }
@@ -106,19 +105,19 @@ class Thread extends AppModel
 
     /*
     gets comments of a thread = depending
-    on the passed parameter itemsPerPage
+    on the passed parameter records_per_page
     */
-    public function getComments ($thread_id,$itemsPerPage)
+    public function getComments ($thread_id,$records_per_page)
     {
         $comments = array();
         $db = DB::conn();
-        $start = ($this->pn - 1) * $itemsPerPage ;
+        $start = ($this->page_num - 1) * $records_per_page ;
 
         $rows = $db->rows(
         "SELECT * FROM comment LEFT JOIN user
             ON comment.comment_user_id=user.user_id
             WHERE comment_thread_id = ? ORDER BY comment_created ASC
-            LIMIT $start,$itemsPerPage",
+            LIMIT $start,$records_per_page",
             array($thread_id)
         );
     

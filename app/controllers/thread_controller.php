@@ -12,17 +12,19 @@ class ThreadController extends AppController
     public function index ()
     {
         $thread = new Thread();
-        $thread->pn = Param::get('pn');//page number(GET variable)
+        $thread->page_num = Param::get('page_num');//page number(GET variable)
         $page ="";
-        //if no page is set,set pn(page number) to 1
-        if(!isset($thread->pn) || !is_numeric($thread->pn) )
+        //if no page is set,set page_num(page number) to 1
+        if(!($thread->page_num) || !is_numeric($thread->page_num) )
         {
-            $thread->pn = 1;
+            $thread->page_num = 1;
         }
 
         $threads = $thread->getAll(self::THREADS_PER_PAGE);
         if(count($threads)>0){
-            $page = new Pagination(Thread::count_threads(), self::THREADS_PER_PAGE);
+            $page = new Pagination();
+            $page->total_rows = Thread::count_threads();
+            $page->per_page = self::THREADS_PER_PAGE;
             $paginate = $page->pageIt();
         }
         
@@ -54,7 +56,7 @@ class ThreadController extends AppController
             redirect(url('/'));
 
         } else {
-            flashMessage( 'login_failed', 'Login credentials invalid!' ); 
+            
             redirect(url('/'));
         }
         $user->autoRender = false;
@@ -140,16 +142,22 @@ class ThreadController extends AppController
                 break;
 
             case 'create_end':
-            $thread->title = Param::get('title');
-            $thread->user_id = get_session('logged_in', 'user_id');
-            $comment->body = Param::get('body');
-            
-            try {
-                $thread->create($comment);
-            } catch (ValidationException $e) {
-                $page = 'create';
-            }
-                redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
+                $thread->thread_title = Param::get('thread_title');
+                $thread->user_id = get_session('logged_in', 'user_id');
+                $comment->body = Param::get('body');
+                
+                try {
+                     if ( $thread->create($comment) )
+                    {
+                        redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
+                    } else { //if not redirect to self
+                        $page = 'create';
+                    }
+                   
+                } catch (ValidationException $e) {
+                    $page = 'create';
+                }
+               
                 break;
             
             default:
@@ -167,21 +175,23 @@ class ThreadController extends AppController
     public function viewThread ()
     {
         $thread = new Thread();
-        $thread->pn = Param::get('pn');
+        $thread->page_num = Param::get('page_num');
 
-        //if no page is set,set pn(page number) to 1
-        if (!isset($thread->pn) || !is_numeric($thread->pn) )
+        //if no page is set,set page_num(page number) to 1
+        if (!isset($thread->page_num) || !is_numeric($thread->page_num) )
         {
-            $thread->pn = 1;
+            $thread->page_num = 1;
         }
 
         $view_thread = $thread->get(Param::get('thread_id'));
         $thread->thread_id = $view_thread['thread_id'];
         $comments = $thread->getComments($thread->thread_id, self::COMMENTS_PER_PAGE);
         
-        $page = new Pagination($thread->count_comments(), self::COMMENTS_PER_PAGE, array("thread_id=$thread->thread_id"));
+        $page = new Pagination();
+        $page->total_rows = $thread->count_comments();
+        $page->per_page = self::COMMENTS_PER_PAGE;
+        $page->extra_query = array("thread_id=$thread->thread_id");
         $paginate = $page->pageIt();
-        
         //if there threads but method did not return any threads
         //this is for pages that do not exist
         if ($thread->count_comments() > 0 && count($comments) == 0)
