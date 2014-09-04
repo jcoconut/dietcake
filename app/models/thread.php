@@ -43,7 +43,7 @@ class Thread extends AppModel
 
         $db = DB::conn();
         $count = $db->row("SELECT COUNT(*) as count FROM comment
-        WHERE comment_thread_id = ?", array($this->thread_id));
+            WHERE comment_thread_id = ?", array($this->thread_id));
         return $count['count'];
     }
 
@@ -59,14 +59,13 @@ class Thread extends AppModel
 
         $comment_counts = "(select count(comment_id) from comment where thread.thread_id = comment.comment_thread_id)";
         $last_posted = "(select user.user_username from comment left join user on comment.comment_user_id=user.user_id
-        where comment.comment_thread_id=thread.thread_id ORDER BY comment.comment_created DESC  limit 1)";
+            where comment.comment_thread_id=thread.thread_id ORDER BY comment.comment_created DESC  limit 1)";
 
         $select_statements = "thread.thread_id,thread.thread_title,thread.thread_created,user.user_username,
-        $comment_counts as comment_count,
-        $last_posted as last_posted";
+            $comment_counts as comment_count, $last_posted as last_posted";
 
         $rows = $db->rows("SELECT $select_statements FROM thread
-        LEFT JOIN user ON thread.thread_user_id=user.user_id LIMIT $start,$itemsPerPage");
+            LEFT JOIN user ON thread.thread_user_id=user.user_id LIMIT $start,$itemsPerPage");
 
         return $rows;
     }
@@ -79,8 +78,8 @@ class Thread extends AppModel
     {
         $db = DB::conn();
         $row = $db->row('SELECT * FROM thread
-        LEFT JOIN user ON thread.thread_user_id=user.user_id
-        WHERE thread.thread_id = ?' , array($id));
+            LEFT JOIN user ON thread.thread_user_id=user.user_id
+            WHERE thread.thread_id = ?' , array($id));
         return $row;
 
     }
@@ -116,11 +115,11 @@ class Thread extends AppModel
         $start = ($this->pn - 1) * $itemsPerPage ;
 
         $rows = $db->rows(
-        "SELECT * FROM comment
-        LEFT JOIN user ON comment.comment_user_id=user.user_id
-        WHERE comment_thread_id = ? ORDER BY comment_created ASC
-        LIMIT $start,$itemsPerPage",
-        array($thread_id)
+        "SELECT * FROM comment LEFT JOIN user
+            ON comment.comment_user_id=user.user_id
+            WHERE comment_thread_id = ? ORDER BY comment_created ASC
+            LIMIT $start,$itemsPerPage",
+            array($thread_id)
         );
     
         return $rows;
