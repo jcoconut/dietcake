@@ -76,13 +76,14 @@ class User extends AppModel
             $this->already_registered = true;
             return false;
         }else{
-
-            $db->query('INSERT INTO user
-                SET user_fname = ?, user_lname = ?,
-                user_email = ?, user_username = ?, user_password = ?, user_registered = NOW()',
-                array($this->user_fname,$this->user_lname,
-                $this->user_email,$this->user_username,md5(sha1($this->user_password))));
-
+            $params = array(
+                "user_fname" => $this->user_fname,
+                "user_lname" => $this->user_lname,
+                "user_email" => $this->user_email,
+                "user_username" => $this->user_username,
+                "user_password" => md5(sha1($this->user_password))
+            );
+            $db->insert("user", $params);
             $this->id = $db->lastInsertId();
             $db->commit();
             return true;
