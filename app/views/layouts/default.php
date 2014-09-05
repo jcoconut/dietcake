@@ -33,14 +33,14 @@
         <h3>KIThub <small> Klab Intriguing Threads</small></h3>
       </div>
       
-      <?php flashMessage('login_failed'); ?>
+      <?php flash_message('login_failed'); ?>
       
-      <?php if(!checkSession('logged_in')): ?>
-      <form method="post" action="<?php echo_htmlschars(url('thread/userlogin')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
+      <?php if(!check_session('logged_in')): ?>
+      <form method="post" action="<?php safe_output(url('user/userlogin')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
         <div class="row">
           <div class="small-5 columns" id="username_container">
             <label>Username
-              <input type="text" placeholder="username" name="user_username" style="height:1.31rem;">
+              <input type="text" placeholder="username" name="user_username" style="height:1.31rem;" required>
             </label>
           </div>
           
@@ -67,7 +67,7 @@
 
             <div class="small-2 columns right">
             <label>&nbsp;
-              <a href="<?php echo_htmlschars(url('thread/logout')); ?>" class="button tiny secondary right">Logout</a>
+              <a href="<?php safe_output(url('user/logout')); ?>" class="button tiny secondary right">Logout</a>
             </label>
             </div>
           </div>
@@ -76,7 +76,7 @@
     </div>
     <div data-magellan-expedition="fixed" class="mag">
     <div class="icon-bar five-up" style="padding:0px;margin:0px;">
-      <a class="item" href="<?php echo_htmlschars(url('/')); ?>" style="">
+      <a class="item" href="<?php safe_output(url('/')); ?>" style="">
         <i class="fi-home"></i>
         <label>Home</label>
       </a>
@@ -92,13 +92,13 @@
         <i class="fi-mail"></i>
         <label>Nothing here</label>
       </a>
-      <?php if(checkSession('logged_in')): ?>
-      <a class="item" href="<?php echo_htmlschars(url('settings/userinfo')); ?>">
+      <?php if(check_session('logged_in')): ?>
+      <a class="item" href="<?php safe_output(url('settings/userinfo')); ?>">
         <i class="fi-wrench"></i>
         <label>Settings</label>
       </a>
       <?php else: ?>
-      <a class="item" href="<?php echo_htmlschars(url('thread/registeruser')); ?>">
+      <a class="item" href="<?php safe_output(url('user/registeruser')); ?>">
         <i class="fi-like"></i>
         <label>Register</label>
       </a>
@@ -142,7 +142,7 @@
     </div>
   </div>
     <script>
-    console.log(<?php echo_htmlschars(round(microtime(true) - TIME_START, 3)) ?> + 'sec');
+    console.log(<?php safe_output(round(microtime(true) - TIME_START, 3)) ?> + 'sec');
     </script>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="/foundation/js/foundation.min.js"></script>

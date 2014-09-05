@@ -3,7 +3,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 <div class="row">
 	<div class="medium-6 small-12 columns">
-		<span class=" clearfix"><?php echo_htmlschars($view_thread['thread_title']) ?></span>
+		<span class=" clearfix"><?php safe_output($view_thread['thread_title']) ?></span>
 		<small>by <?php echo($view_thread['user_fname']); ?></small>
 		<a href="" style="color:#555555;" title="Delete thread"><i class="fi-trash cus-shadow"></i></a>
 		<a href="" style="color:#555555;" title="Edit thread"><i class="fi-page-edit"></i></a>
@@ -28,18 +28,16 @@
 		<div class="row">
 			<div class="left medium-6 columns">
 				<img class="left" src="http://placecage.com/50/50">
-				<small class=""><?php echo_htmlschars($comment['user_fname']) ?></small><br>
+				<small class=""><?php safe_output($comment['user_fname']) ?></small><br>
 				<small class="">New Member</small><br>
 
 			</div>
 			<div class="right medium-6 columns">
-			<small class="right"><?php echo_htmlschars($comment['comment_created']) ?></small>
-			
-
+			<small class="right"><?php safe_output($comment['comment_created']) ?></small>
 			</div>
 		</div>
 		<hr>
-		<div class="row">
+		<div class="row" style="word-wrap:break-word;">
 			<p><?php echo ($comment['comment_body']) ?></p>
 		</div>
 	</div>
@@ -62,11 +60,11 @@
 	</div>
 </div>
 
-<?php if(checkSession('logged_in')): ?>
-<form class="well" method="post" action="<?php echo_htmlschars(url('thread/writecomment')) ?>">
+<?php if(check_session('logged_in')): ?>
+<form class="well" method="post" action="<?php safe_output(url('thread/writecomment')) ?>">
 
 	<label>Comment</label>
-	<textarea name="body" id="comment_body"><?php echo_htmlschars(Param::get('body')) ?></textarea>
+	<textarea name="body" id="comment_body"><?php safe_output(Param::get('body')) ?></textarea>
 	<br />
 	<input type="hidden" name="thread_id" value="<?php echo $view_thread['thread_id']; ?>">
 	<input type="hidden" name="page_next" value="write_end">

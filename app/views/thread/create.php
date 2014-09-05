@@ -9,8 +9,8 @@
 
 		<?php if (!empty($thread->validation_errors['thread_title']['length'])): ?>
 			<span class="sub-header clearfix">Title must be between
-				<?php echo_htmlschars($thread->validation['thread_title']['length'][1]) ?> and
-				<?php echo_htmlschars($thread->validation['thread_title']['length'][2]) ?> characters in length!
+				<?php safe_output($thread->validation['thread_title']['length'][1]) ?> and
+				<?php safe_output($thread->validation['thread_title']['length'][2]) ?> characters in length!
 			</span>
 		<?php endif ?>
 		
@@ -28,11 +28,11 @@
 
 
 
-<form class="well" method="post" action="<?php echo_htmlschars(url('')) ?>">
+<form class="well" method="post" action="<?php safe_output(url('')) ?>">
 	<label>Title</label>
-	<input type="text" class="span2" name="title" value="<?php echo_htmlschars(Param::get('thread_title')) ?>">
+	<input type="text" class="span2" name="thread_title" value="<?php safe_output(Param::get('thread_title')) ?>">
 	<label>Comment</label>
-	<textarea name="body" id="thread_body"><?php echo_htmlschars(Param::get('body')) ?></textarea>
+	<textarea name="body" id="thread_body"><?php safe_output(Param::get('body')) ?></textarea>
 	<br />
 	<input type="hidden" name="page_next" value="create_end">
 	<button type="submit" class="btn btn-primary">Submit</button>

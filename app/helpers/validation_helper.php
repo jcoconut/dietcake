@@ -9,44 +9,27 @@ function is_between ($input, $min, $max)
 //checks if length = 0 (empty)
 function required ($input)
 {
-    if(mb_strlen($input)>0){
-        return true;
-    }
+    return mb_strlen($input)>0 ;
 }
 
 //checks if string is alpha only
 function is_alpha ($string)
 {
-    if(preg_match('/^[A-Za-z\s]+$/',$string)){
-        return true;
-    }else{
-        return false;
-    }
+    return (preg_match('/^[A-Za-z\s]+$/',$string));
 }
 
 //checks if strings are same
 function is_same ($string1,$string2)
 {
-    if($string1==$string2){
-        return true;
-    }else{
-        return false;
-    }
+    return $string1==$string2;
 }
 
 //checks if string is valid email
 function is_email ($email)
 {
-
-    //$email = \"somebody@somesite.com\"; // Valid email address 
-    // Set up regular expression strings to evaluate the value of email variable against
     $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
-    // Run the preg_match() function on regex against the email address
-    if (preg_match($regex, $email)) {
-        return true;
-    } else { 
-        return false;
-    } 
+    return preg_match($regex, $email);
+  
 }
 
 ?>

@@ -53,12 +53,11 @@ class User extends AppModel
        
     );
 
-    /*
-    function to call
-    when registering form is submitted
-    checks in database if existing email or username
+    /**
+    * insert user
+    * @return boolean
     */
-    public function register ()
+    public function register()
     {
        
         $this->password_match = is_same($this->user_password,$this->user_confirm_password);
@@ -91,11 +90,11 @@ class User extends AppModel
         
     }
 
-    /*
-    looks for the input username and password in user table
-    returns the row if found
+    /**
+    * login validate in db
+    * @return array
     */
-    public function login ()
+    public function validateLogin()
     {
         $db = DB::conn();
         $db->begin();
