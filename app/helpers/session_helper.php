@@ -1,25 +1,23 @@
 <?php
-function add_session ($sess_name,$sess_var)
+function set_session($sess_name,$sess_var)
 {
     return $_SESSION[$sess_name] = $sess_var;
 }
 
-function check_session ($sess_name){
-    if(isset($_SESSION[$sess_name])) {
-        return true;
-    }
-    return false;
+function is_logged($sess_name)
+{
+    return isset($_SESSION[$sess_name]);
 }
 
-function get_session ($sess_name , $sess_var)
+function get_session($sess_name , $sess_var)
 {
-    if(check_session($sess_name)){
+    if(is_logged($sess_name)){
         return $_SESSION[$sess_name][$sess_var];   
     }
     
 }
 
-function flash_message ( $name = '', $message = '', $class = 'alert', $tag = 'p' )
+function flash_message($name = '', $message = '', $class = 'alert', $tag = 'p')
 {
     if( !empty( $name ) ) {
        

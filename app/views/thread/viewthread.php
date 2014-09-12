@@ -60,7 +60,7 @@
 	</div>
 </div>
 
-<?php if(check_session('logged_in')): ?>
+<?php if(is_logged('logged_in')): ?>
 <form class="well" method="post" action="<?php safe_output(url('thread/writecomment')) ?>">
 
 	<label>Comment</label>

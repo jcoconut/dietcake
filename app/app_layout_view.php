@@ -9,7 +9,7 @@
 
 class AppLayoutView extends View
 {
-    public $layout = 'layouts/default';
+    public $layout = 'layouts/default2';
 
     public function render($action = null)
     {

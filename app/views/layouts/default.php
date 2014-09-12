@@ -7,9 +7,11 @@
     <!-- <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
     <!-- <script src="http://code.jquery.com/jquery.js"></script> -->
     <!-- <script src="/bootstrap/js/bootstrap.min.js"></script> -->
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     <link href="/foundation/css/foundation.css" rel="stylesheet">
     <link href="/custom/custom.css" rel="stylesheet">
     <link href="/foundation/foundation-icons/foundation-icons.css" rel="stylesheet" >
+
     <style>
       [data-magellan-expedition], [data-magellan-expedition-clone] {
        padding: 0px;
@@ -17,12 +19,6 @@
       .icon-bar > *{
         padding:0.25rem;
       }
-      .truncate {
-  width: 250px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
     </style>
   </head>
 
@@ -35,7 +31,7 @@
       
       <?php flash_message('login_failed'); ?>
       
-      <?php if(!check_session('logged_in')): ?>
+      <?php if(!is_logged('logged_in')): ?>
       <form method="post" action="<?php safe_output(url('user/userlogin')); ?>" class="medium-6 columns small-12" style="margin-bottom:0px;">
         <div class="row">
           <div class="small-5 columns" id="username_container">
@@ -92,7 +88,7 @@
         <i class="fi-mail"></i>
         <label>Nothing here</label>
       </a>
-      <?php if(check_session('logged_in')): ?>
+      <?php if(is_logged('logged_in')): ?>
       <a class="item" href="<?php safe_output(url('settings/userinfo')); ?>">
         <i class="fi-wrench"></i>
         <label>Settings</label>

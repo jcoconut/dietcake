@@ -4,11 +4,15 @@ class ThreadController extends AppController
     const THREADS_PER_PAGE = 10;
     const COMMENTS_PER_PAGE = 10;
 
-    /** 
+    /**
     * homepage
     */
     public function index()
     {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
+        
         $thread = new Thread();
         $thread->page_num = Param::get('page_num', 1);        
         $threads = $thread->getAll(self::THREADS_PER_PAGE);
@@ -30,7 +34,7 @@ class ThreadController extends AppController
     public function createThread()
     {
         
-        if (!check_session('logged_in')) {
+        if (!is_logged('logged_in')) {
             redirect(url('/'));
         }
 

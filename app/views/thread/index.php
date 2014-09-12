@@ -3,7 +3,7 @@
 
 			<div class="row">
 				<div class="medium-6 small-12 columns">
-					<?php if(check_session('logged_in')): ?>
+					<?php if(is_logged('logged_in')): ?>
 						<a class="button tiny secondary" href="<?php safe_output(url('thread/createthread')) ?>"><i class="fi-plus"></i> Post New Thread</a>
 					<?php else: ?>
 						<small>Login or Register to Post a Thread</small>
@@ -29,7 +29,7 @@
 						<small>Title</small>
 					</div>
 					<div class="medium-2 small-6 columns hide-for-small-only">
-						<small>Views/Replies</small>
+						<small>Replies</small>
 					</div>
 					<div class="medium-2 small-6 columns hide-for-small-only">
 						<small>Last Post By</small>
@@ -37,7 +37,7 @@
 					
 				</div>
 
-			<?php $num =1; ?>
+			
 			<?php foreach ($threads as $thread): ?>
 				<div class="row panel" style="padding:0px;"  data-equalizer>
 					<div class="medium-8 small-12 columns" data-equalizer-watch>
@@ -60,20 +60,25 @@
 						</a>
 					</div>
 					<div class="medium-2 small-6 columns" style="background:#CCCCFF;"  data-equalizer-watch>
-						<small>Views : ?</small><br>
+						
 						<small>Replies : <?php echo $thread['comment_count']-1; ?></small>
 					</div>
 					<div class="medium-2 small-6 columns" style="background:#DDDDDD;"  data-equalizer-watch>
 						<small><em><?php echo $thread['last_posted']; ?></em></small><br>
-						<small>a few moments ago</small>
+						<?php $timed = time_difference($thread['when_last'],date('Y-m-d H:i:s'));
+							 
+						?>
+						<small><?php echo ($timed); ?> ago</small>
+						
 					</div>
 					
 				</div>
+
 			<?php endforeach ?>
 			</div>
 			<div class="row">
 				<div class="medium-6 small-12 columns">
-					<?php if(check_session('logged_in')): ?>
+					<?php if(is_logged('logged_in')): ?>
 						<a class="button tiny secondary" href="<?php safe_output(url('thread/createthread')) ?>"><i class="fi-plus"></i> Post New Thread</a>
 					<?php else: ?>
 						<small>Login or Register to Post a Thread</small>
@@ -110,10 +115,10 @@
 				<h3 class="clearfix">There are no threads yet!</h3>
 				<h1 class="header clearfix">:(</h1>
 
-				<?php if(check_session('logged_in')): ?>
+				<?php if(is_logged('logged_in')): ?>
 					<p><a href="<?php safe_output(url('thread/createthread')) ?>"><kbd><i class="fi-plus"></i> Add</kbd></a> a thread now!</p>
 				<?php else: ?>
-					<p><a href="<?php safe_output(url('thread/register')) ?>"><kbd><i class="fi-plus"></i> Register</kbd></a>to add a thread</p>
+					<p><a href="<?php safe_output(url('user/registeruser')) ?>"><kbd><i class="fi-plus"></i> Register</kbd></a>to add a thread</p>
 				<?php endif; ?>
 			</div>
 		</div>
