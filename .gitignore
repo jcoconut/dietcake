@@ -2,3 +2,4 @@ app/config/core.php
 app/tmp/logs/*
 app/webroot/*
 app/views/*
+lib/mailing_lib.php
