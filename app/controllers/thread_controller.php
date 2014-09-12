@@ -4,7 +4,7 @@ class ThreadController extends AppController
     const THREADS_PER_PAGE = 10;
     const COMMENTS_PER_PAGE = 10;
 
-    /**
+    /** 
     * homepage
     */
     public function index()
