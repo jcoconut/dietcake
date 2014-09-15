@@ -10,53 +10,63 @@ FLUSH PRIVILEGES;
 
 USE klabhouse;
 CREATE TABLE IF NOT EXISTS user (
-user_id
+id
 INT UNSIGNED NOT NULL AUTO_INCREMENT,
-user_fname
+fname
 VARCHAR(50) NOT NULL,
-user_lname
+lname
 VARCHAR(50) NOT NULL,
-user_email
+email
 VARCHAR(50) NOT NULL,
-user_username
+username
 VARCHAR(50) NOT NULL,
-user_password
+password
 VARCHAR(50) NOT NULL,
-user_type
+image
+VARCHAR(50),
+type
 INT(1),
-user_created
+created
 TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-user_updated
+updated
 DATETIME,
-PRIMARY KEY (user_id)
-)ENGINE=InnoDB;
+PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 CREATE TABLE IF NOT EXISTS thread (
-thread_id
+id
 INT UNSIGNED NOT NULL AUTO_INCREMENT,
-thread_title
+title
 VARCHAR(50) NOT NULL,
-thread_user_id
+privacy
+TINYINT(1),
+user_id
 INT (11),
-thread_created
+klub_id
+INT (11),
+created
 TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-PRIMARY KEY (thread_id)
-)ENGINE=InnoDB;
+updated
+DATETIME,
+PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 CREATE TABLE IF NOT EXISTS comment (
-comment_id
+id
 INT UNSIGNED NOT NULL AUTO_INCREMENT,
-comment_thread_id
+thread_id
 INT UNSIGNED NOT NULL,
-comment_user_id
+user_id
 INT (11) NOT NULL,
-comment_body
+body
 TEXT NOT NULL,
-comment_created
+created
 TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-PRIMARY KEY (comment_id),
-INDEX (comment_thread_id, comment_created)
-)ENGINE=InnoDB;
+updated
+DATETIME,
+PRIMARY KEY (id),
+INDEX (thread_id, created)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 CREATE TABLE IF NOT EXISTS klub (
 klub_id

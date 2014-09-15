@@ -14,19 +14,19 @@ class SettingsController extends AppController
                 break;
             case 'info_ok':
             
-                $user->user_fname = Param::get('user_fname');
-                $user->user_lname = Param::get('user_lname');
-                $user->user_username = Param::get('user_username');
-                $user->user_email = Param::get('user_email');
-                $user->user_id = get_session('logged_in', 'user_id');
-                $user->current_username = get_session('logged_in', 'user_username');
-                $user->current_email = get_session('logged_in', 'user_email');
+                $user->fname = Param::get('fname');
+                $user->lname = Param::get('lname');
+                $user->username = Param::get('username');
+                $user->email = Param::get('email');
+                $user->id = get_session('logged_in', 'id');
+                $user->current_username = get_session('logged_in', 'username');
+                $user->current_email = get_session('logged_in', 'email');
                 try {
                     $logged_user = $user->updateUser();
                     if ($logged_user)
                     {
                         print_r($logged_user);
-                        add_session('logged_in',$logged_user);
+                        set_session('logged_in',$logged_user);
                     } else {
                         $page = 'userinfo';
                     }
@@ -55,11 +55,11 @@ class SettingsController extends AppController
             case 'passwordchange':
                 break;
             case 'info_ok':
-                $user->user_username = get_session('logged_in','user_username');
-                $user->user_new_password = Param::get('user_new_password');
-                $user->user_confirm_password = Param::get('user_confirm_password');
-                $user->user_password = Param::get('user_password');
-                $user->user_id = get_session('logged_in','user_id');
+                $user->username = get_session('logged_in','username');
+                $user->new_password = Param::get('new_password');
+                $user->confirm_password = Param::get('confirm_password');
+                $user->password = Param::get('password');
+                $user->id = get_session('logged_in','id');
                 try {
                     if ( $user->passwordChange() )
                     {

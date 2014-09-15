@@ -35,25 +35,31 @@ function time_difference($date1, $date2)
             $string = "{$diff['m']} month"; 
         } else {
 
-            if($diff['h'] > 1) {
-                $string = "{$diff['h']} hours";
-            } else if($diff['h'] > 0) {
-                $string = "{$diff['h']} hour"; 
-            } else {
 
-                if($diff['i'] > 1) {
-                    $string = "{$diff['i']} minutes";
-                } else if($diff['i'] > 0) {
-                    $string = "{$diff['i']} minute"; 
+             if($diff['d'] > 1) {
+                    $string = "{$diff['d']} days";
+                } else if($diff['d'] > 0) {
+                    $string = "{$diff['d']} day"; 
                 } else {
 
-                    $string = "a few moments"; 
-                    
-                }
+                    if($diff['h'] > 1) {
+                        $string = "{$diff['h']} hours";
+                    } else if($diff['h'] > 0) {
+                        $string = "{$diff['h']} hour"; 
+                    } else {
 
-               
-            }
-            
+                        if($diff['i'] > 1) {
+                            $string = "{$diff['i']} minutes";
+                        } else if($diff['i'] > 0) {
+                            $string = "{$diff['i']} minute"; 
+                        } else {
+
+                            $string = "a few moments"; 
+                        }
+
+                       
+                    }
+                }
         }
 
         

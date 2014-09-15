@@ -5,9 +5,9 @@ class ThreadController extends AppController
     const COMMENTS_PER_PAGE = 10;
 
     /**
-    * homepage
+    * thread list
     */
-    public function index()
+    public function threads()
     {
         if (!is_logged('logged_in')) {
             redirect(url('/'));
@@ -47,12 +47,12 @@ class ThreadController extends AppController
             case 'create':
                 break;
             case 'create_end':
-                $thread->thread_title = Param::get('thread_title');
-                $comment->user_id = get_session('logged_in', 'user_id');
+                $thread->title = Param::get('title');
+                $comment->user_id = get_session('logged_in', 'id');
                 $comment->body = Param::get('body');
                 try {
                     if ( $thread->create($comment) ) {
-                        redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
+                        redirect(url('thread/viewthread?id='.$thread->id));
                     } else {
                         $page = 'create';
                     }
@@ -76,13 +76,13 @@ class ThreadController extends AppController
     {
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
-        $view_thread = $thread->get(Param::get('thread_id'));
-        $thread->thread_id = $view_thread['thread_id'];
-        $comments = $thread->getComments($thread->thread_id, self::COMMENTS_PER_PAGE);  
+        $view_thread = $thread->get(Param::get('id'));
+        $thread->id = $view_thread['id'];
+        $comments = $thread->getComments($thread->id, self::COMMENTS_PER_PAGE);  
         $page = new Pagination();
         $page->total_rows = $thread->countComments();
         $page->per_page = self::COMMENTS_PER_PAGE;
-        $page->extra_query = array("thread_id=$thread->thread_id");
+        $page->extra_query = array("id=$thread->id");
         $paginate = $page->pageIt();
         $this->set(get_defined_vars());
     }
@@ -93,15 +93,15 @@ class ThreadController extends AppController
     public function writeComment()
     {   
         $comment = new Comment;
-        $comment->thread_id = Param::get('thread_id'); 
-        $comment->user_id = get_session('logged_in', 'user_id');
+        $comment->thread_id = Param::get('id'); 
+        $comment->user_id = get_session('logged_in', 'id');
         $comment->body = Param::get('body');
         $page = Param::get('page_next', 'write');
         switch ($page) {
             case 'write':
                 break;
             case 'write_end':   
-                redirect(url('thread/viewthread?thread_id='.$comment->thread_id));
+                redirect(url('thread/viewthread?id='.$comment->thread_id));
                 try {
                     $comment->write($comment->thread_id);
                 } catch (ValidationException $e) {

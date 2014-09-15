@@ -5,11 +5,7 @@ class AdminController extends AppController
     public function index(){
         $klub = new Klub();
         $klubs = $klub->getKlubs();
-        $this->set(get_defined_vars());
-        // print_r("<pre>");
-        // print_r($klubs);
-        // print_r("</pre>");
-        // exit();       
+        $this->set(get_defined_vars());    
     }
 
     public function addKlub(){
@@ -105,16 +101,16 @@ class AdminController extends AppController
 
             case 'user_ok': 
                
-                $user->user_fname = Param::get('user_fname');
-                $user->user_lname = Param::get('user_lname');
-                $user->user_username = Param::get('user_username');
-                $user->user_email = Param::get('user_part_email')."@klab.com";
-                $user->user_type = Param::get('user_type',0);
-                $user->user_password = rand_string(6);
-                $mailing->email_ad = $user->user_email;
+                $user->fname = Param::get('fname');
+                $user->lname = Param::get('lname');
+                $user->username = Param::get('username');
+                $user->email = Param::get('part_email')."@klab.com";
+                $user->type = Param::get('type',0);
+                $user->password = rand_string(6);
+                $mailing->email_ad = $user->email;
                 $mailing->subject = "You have been Invited to Klabhouse!";
-                $mailing->body = "Congratulations $user->user_fname $user->user_lname !
-                    <p>sign in with this E-mail and password : $user->user_password </p>";
+                $mailing->body = "Congratulations $user->fname $user->lname !
+                    <p>sign in with this E-mail and password : $user->password </p>";
                 try {
                     if(!$user->addUser()) {
                         $page = 'adduser';
@@ -137,5 +133,22 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
+    public function userList(){
+        $user = new user();
+        $users = $user->getUsers();
+        $this->set(get_defined_vars());
+    }
 
+    public function deleteUser(){
+        $user = new user();   
+        $user->id = Param::get('id');
+        $deleted = $user->deleteUser();
+        if($deleted) {
+            flash_message('message', 'User has been deleted!');
+            flash_message('positive_message', 1);
+        } else {
+            flash_message('message', 'User to delete does not exist!');
+        }
+        redirect('userlist');
+    }
 }

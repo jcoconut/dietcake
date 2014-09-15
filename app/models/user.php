@@ -11,7 +11,7 @@ class User extends AppModel
     public $username_taken = false;
 
     public $validation = array(
-        'user_fname' => array(
+        'fname' => array(
             'format' => array(
                 'is_alpha'
             ),
@@ -20,7 +20,7 @@ class User extends AppModel
             ),
         ),
 
-        'user_lname' => array(
+        'lname' => array(
             'format' => array(
                 'is_alpha'
             ),
@@ -29,7 +29,7 @@ class User extends AppModel
             ),
         ),
 
-        'user_email' => array(
+        'email' => array(
             'format' => array(
                 'is_email'
             ),
@@ -38,7 +38,7 @@ class User extends AppModel
             ),
         ),
 
-        'user_username' => array(
+        'username' => array(
             'format' => array(
                 'is_alpha'
             ),
@@ -47,12 +47,12 @@ class User extends AppModel
             ),
         ),
 
-        'user_password' => array(
+        'password' => array(
             'length' => array(
                 'is_between', self::MIN_CHAR, self::MAX_CHAR,
             ),
         ),
-       'user_new_password' => array(
+       'new_password' => array(
             'length' => array(
                 'is_between', self::MIN_CHAR, self::MAX_CHAR,
             ),
@@ -66,7 +66,7 @@ class User extends AppModel
     public function register()
     {
        
-        $this->password_match = is_same($this->user_password,$this->user_confirm_password);
+        $this->password_match = is_same($this->password,$this->confirm_password);
         if (!$this->validate() || ($this->password_match==false)) {
             throw new ValidationException('invalid');
         }
@@ -82,11 +82,11 @@ class User extends AppModel
             return false;
         } else {     
             $params = array(
-                "user_fname" => $this->user_fname,
-                "user_lname" => $this->user_lname,
-                "user_email" => $this->user_email,
-                "user_username" => $this->user_username,
-                "user_password" => md5(sha1($this->user_password))
+                "fname" => $this->fname,
+                "lname" => $this->lname,
+                "email" => $this->email,
+                "username" => $this->username,
+                "password" => md5(sha1($this->password))
             );
             $db->insert("user", $params);
             $this->id = $db->lastInsertId();
@@ -115,12 +115,12 @@ class User extends AppModel
             return false;
         } else {     
             $params = array(
-                "user_fname" => $this->user_fname,
-                "user_lname" => $this->user_lname,
-                "user_email" => $this->user_email,
-                "user_username" => $this->user_username,
-                "user_type" => $this->user_type,
-                "user_password" => md5(sha1($this->user_password))
+                "fname" => $this->fname,
+                "lname" => $this->lname,
+                "email" => $this->email,
+                "username" => $this->username,
+                "type" => $this->type,
+                "password" => md5(sha1($this->password))
             );
             $db->insert("user", $params);
             // $this->id = $db->lastInsertId();
@@ -133,13 +133,13 @@ class User extends AppModel
     public function checkEmailExist(){
         $db = DB::conn();
         $found = $db->row("SELECT * FROM user
-            WHERE user_email = ? " , array($this->user_email));
+            WHERE email = ? " , array($this->email));
         return $found;
     }
     public function checkUsernameExist(){
         $db = DB::conn();
         $found = $db->row("SELECT * FROM user
-            WHERE user_username = ? " , array($this->user_username));
+            WHERE username = ? " , array($this->username));
         return $found;
     }
 
@@ -154,13 +154,13 @@ class User extends AppModel
         }
         $db = DB::conn();
         $db->begin();
-        if(!is_same($this->current_email, $this->user_email))
+        if(!is_same($this->current_email, $this->email))
         {
             if($this->checkEmailExist()) {
                 $this->email_taken = true;
             }
         }
-        if(!is_same($this->current_username, $this->user_username)) {
+        if(!is_same($this->current_username, $this->username)) {
         
             if($this->checkUsernameExist()) {
                 $this->username_taken = true;
@@ -170,15 +170,16 @@ class User extends AppModel
            return false;
         } else {
             $params = array(
-                "user_fname" => $this->user_fname,
-                "user_lname" => $this->user_lname,
-                "user_email" => $this->user_email,
-                "user_username" => $this->user_username
+                "fname" => $this->fname,
+                "lname" => $this->lname,
+                "email" => $this->email,
+                "username" => $this->username,
+                "updated" => date('Y-m-d H:i:s')
                 );
-            $where_params = array("user_id" => $this->user_id);
+            $where_params = array("id" => $this->id);
             $db->update("user",$params,$where_params);
             $logged_user = $db->row("SELECT * FROM user
-                WHERE user_id = ? " , array( $this->user_id ) );
+                WHERE id = ? " , array( $this->id ) );
             $db->commit();
             return $logged_user;
         }
@@ -189,7 +190,7 @@ class User extends AppModel
     */
     public function passwordChange ()
     {
-        $this->password_match = is_same($this->user_new_password,$this->user_confirm_password);
+        $this->password_match = is_same($this->new_password,$this->confirm_password);
         if (!$this->validate() || ($this->password_match==false))
         {
             throw new ValidationException('invalid');
@@ -197,12 +198,12 @@ class User extends AppModel
         $db = DB::conn();
         $db->begin();
         $loguser = $db->row('SELECT * FROM user
-            WHERE user_username = ? AND user_password = ?' ,
-            array($this->user_username,md5(sha1($this->user_password))));
+            WHERE username = ? AND password = ?' ,
+            array($this->username,md5(sha1($this->password))));
         if($loguser){
             $db->query("UPDATE user
-            SET user_password = ? WHERE user_username = ? " ,
-            array(md5(sha1($this->user_new_password)) , $this->user_username) );
+            SET password = ? WHERE username = ? " ,
+            array(md5(sha1($this->new_password)) , $this->username) );
             $db->commit();
             return true;
         }else{
@@ -218,8 +219,8 @@ class User extends AppModel
     {
         $db = DB::conn();
         $loguser = $db->row('SELECT * FROM user
-            WHERE user_username = ? AND user_password = ?' ,
-            array($this->user_username,md5(sha1($this->user_password))));
+            WHERE username = ? AND password = ?' ,
+            array($this->username,md5(sha1($this->password))));
         
         if($loguser)
         {
@@ -227,6 +228,25 @@ class User extends AppModel
         }
         
     }
+
+    /**
+    * get all users
+    */
+    public function getUsers(){
+        $db = DB::conn();
+        $users = $db->rows("SELECT * FROM user");
+        return $users;
+    }
     
+    /**
+    * delete user
+    */
+    public function deleteUser ()
+    {  
+        $db = DB::conn();
+        $db->query("DELETE FROM user WHERE id = ?", array($this->id));
+        $deleted = $db->rowCount();
+        return $deleted;
+    }
 
 }
