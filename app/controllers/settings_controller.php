@@ -6,6 +6,9 @@ class SettingsController extends AppController
     */
     public function userInfo ()
     {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $user = new User();
         $page = Param::get('page_next', 'userinfo');
         switch ($page) {
@@ -48,6 +51,9 @@ class SettingsController extends AppController
     */
     public function passwordChange ()
     {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $user = new User();
         $page = Param::get('page_next', 'passwordchange');
         switch ($page) {

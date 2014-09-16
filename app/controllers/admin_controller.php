@@ -2,13 +2,21 @@
 class AdminController extends AppController
 {
    
-    public function index(){
+    public function index()
+    {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $klub = new Klub();
         $klubs = $klub->getKlubs();
         $this->set(get_defined_vars());    
     }
 
-    public function addKlub(){
+    public function addKlub()
+    {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $klub = new Klub();
         $page = Param::get('page_next', 'addklub');
         switch ($page) {
@@ -44,7 +52,9 @@ class AdminController extends AppController
 
 
     public function editKlub(){
-
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $klub = new Klub();
         $klub->klub_id = Param::get('klub_id');
         $selected_klub = $klub->getKlub();
@@ -76,7 +86,11 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
-    public function deleteKlub(){
+    public function deleteKlub()
+    {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $klub = new Klub();    
         $klub->klub_id = Param::get('klub_id');
         $deleted = $klub->deleteKlub();
@@ -90,6 +104,9 @@ class AdminController extends AppController
     }
 
     public function addUser() {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $user = new user();
         $mailing = new Mailing();
         $page = Param::get('page_next', 'adduser');
@@ -133,13 +150,21 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
-    public function userList(){
+    public function userList()
+    {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $user = new user();
         $users = $user->getUsers();
         $this->set(get_defined_vars());
     }
 
-    public function deleteUser(){
+    public function deleteUser()
+    {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $user = new user();   
         $user->id = Param::get('id');
         $deleted = $user->deleteUser();

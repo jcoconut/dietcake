@@ -3,6 +3,9 @@ class MailController extends AppController
 {
     public function sendMail()
     {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $mail             = new PHPMailer();
         
         $body             = 'You have been invited';

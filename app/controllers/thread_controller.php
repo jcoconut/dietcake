@@ -74,6 +74,9 @@ class ThreadController extends AppController
     */
     public function viewThread()
     {
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
         $view_thread = $thread->get(Param::get('id'));
@@ -92,6 +95,9 @@ class ThreadController extends AppController
     */
     public function writeComment()
     {   
+        if (!is_logged('logged_in')) {
+            redirect(url('/'));
+        }
         $comment = new Comment;
         $comment->thread_id = Param::get('id'); 
         $comment->user_id = get_session('logged_in', 'id');
