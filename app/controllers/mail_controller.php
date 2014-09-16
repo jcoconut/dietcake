@@ -19,11 +19,11 @@ class MailController extends AppController
         $mail->Host       = "smtp.gmail.com";      
         $mail->Port       = 587;                   
         $mail->Username   = "jalbinco@gmail.com";  
-        $mail->Password   = "walangpass";            // GMAIL password
+        $mail->Password   = "";            // GMAIL password
         $mail->SetFrom('klabhouse@klab.com', 'Klabhouse Admin');
         $mail->AddReplyTo("klabhouse@klab.com","Klabhouse Admin");
         $mail->Subject    = "Congratulations Scorpion!";
-        $mail->AltBody    = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
+        $mail->AltBody    = "To view the message, please use an HTML compatible email viewer!"; 
         $mail->MsgHTML($body);
 
         $address = "jay.co@klab.com";
