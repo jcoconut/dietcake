@@ -5,8 +5,8 @@
 	<div class="medium-6 small-12 columns">
 		<span class=" clearfix"><?php safe_output($view_thread['title']) ?></span>
 		<small>by <?php echo($view_thread['fname']); ?></small>
-		<a href="" style="color:#555555;" title="Delete thread"><i class="fi-trash cus-shadow"></i></a>
-		<a href="" style="color:#555555;" title="Edit thread"><i class="fi-page-edit"></i></a>
+		<!-- <a href="" style="color:#555555;" title="Delete thread"><i class="fi-trash cus-shadow"></i></a>
+		<a href="" style="color:#555555;" title="Edit thread"><i class="fi-page-edit"></i></a> -->
 	</div>
 	<div class="medium-6 small-12 columns text-center">
 		<div class="row">
@@ -22,7 +22,7 @@
 	</div>
 </div>
 
-<div class="row">
+<div class="row" style="min-height:480px;">
 	<?php foreach ($comments as $comment): ?>
 	<div class="panel small-12 columns">
 		<div class="row">
@@ -68,7 +68,7 @@
 	<br />
 	<input type="hidden" name="id" value="<?php echo $view_thread['id']; ?>">
 	<input type="hidden" name="page_next" value="write_end">
-	<button type="submit" class="btn btn-primary">Submit</button>
+	<button type="submit" class="button cus-green">Submit</button>
 </form>
 <script src="/ck/ckeditor.js"></script>
 <script>

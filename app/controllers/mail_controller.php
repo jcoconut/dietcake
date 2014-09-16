@@ -3,7 +3,7 @@ class MailController extends AppController
 {
     public function sendMail()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $mail             = new PHPMailer();

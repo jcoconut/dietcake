@@ -9,7 +9,7 @@ class ThreadController extends AppController
     */
     public function threads()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
             redirect(url('/'));
         }
         
@@ -34,7 +34,7 @@ class ThreadController extends AppController
     public function createThread()
     {
         
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
             redirect(url('/'));
         }
 
@@ -74,7 +74,7 @@ class ThreadController extends AppController
     */
     public function viewThread()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
             redirect(url('/'));
         }
         $thread = new Thread();
@@ -95,7 +95,7 @@ class ThreadController extends AppController
     */
     public function writeComment()
     {   
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
             redirect(url('/'));
         }
         $comment = new Comment;

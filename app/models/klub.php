@@ -1,9 +1,6 @@
 <?php
 class Klub extends AppModel
 {
-    const MIN_CHAR = 1;
-    const MAX_CHAR = 30;
-    
     public $klub_taken = false;
 
     public $validation = array(
@@ -12,7 +9,12 @@ class Klub extends AppModel
                 'is_alpha'
             ),
             'length' => array(
-                'is_between', self::MIN_CHAR, self::MAX_CHAR,
+                'is_between', MIN_CHAR, MAX_CHAR_KLUBNAME,
+            ),
+        ),
+        'klub_details' => array(
+            'length' => array(
+                'is_between', MIN_CHAR, MAX_CHAR_BODY,
             ),
         )
        
@@ -25,7 +27,11 @@ class Klub extends AppModel
     public function getKlubs()
     {  
         $db = DB::conn();
-        $klubs = $db->rows("SELECT * from klub");  
+        $except = REQUESTED;
+        $member_count = "(SELECT COUNT(id) FROM member
+            WHERE klub.klub_id = member.klub_id
+            AND member.level != $except)";
+        $klubs = $db->rows("SELECT klub.klub_id,klub_name,klub_details,$member_count as members from klub");  
         return $klubs;    
     }
 
@@ -48,7 +54,7 @@ class Klub extends AppModel
     {
        
         if (!$this->validate()) {
-            throw new ValidationException('invalid');
+            throw new ValidationException();
         }
         $db = DB::conn();
         $db->begin();         
@@ -57,6 +63,7 @@ class Klub extends AppModel
         }
      
         if($this->klub_taken) {
+            throw new ValidationException();
             return false;
         } else {     
             $params = array(
@@ -83,7 +90,7 @@ class Klub extends AppModel
     /**
     * update klub info
     */
-    public function editklub ()
+    public function editKlub ()
     {
         $this->validate();
         if ($this->hasError()) {
@@ -91,14 +98,13 @@ class Klub extends AppModel
         }
         $db = DB::conn();
         $db->begin();
-        if(!is_same($this->current_name, $this->klub_name))
+        if(!is_same($this->current_name, $this->klub_name) and $this->checkKlubExist())
         {
-            if($this->checkKlubExist()) {
-                $this->klub_taken = true;
-            }
+            $this->klub_taken = true;
         }
         if($this->klub_taken) {
-           return false;
+            throw new ValidationException();
+            return false;
         } else {
             $params = array(
                 "klub_name" => $this->klub_name,
@@ -117,22 +123,9 @@ class Klub extends AppModel
     */
     public function deleteKlub ()
     {
-       
         $db = DB::conn();
-        // $db->begin();
-        // if(!is_same($this->current_name, $this->klub_name))
-        // {
-        //     if($this->checkKlubExist()) {
-        //         $this->klub_taken = true;
-        //     }
-        // }
-
         $db->query("DELETE FROM klub WHERE klub_id = ?", array($this->klub_id));
         $deleted = $db->rowCount();
         return $deleted;
-
     }
-  
-    
-
 }

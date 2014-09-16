@@ -4,7 +4,7 @@ class AdminController extends AppController
    
     public function index()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $klub = new Klub();
@@ -14,7 +14,7 @@ class AdminController extends AppController
 
     public function addKlub()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $klub = new Klub();
@@ -29,14 +29,11 @@ class AdminController extends AppController
                 $klub->klub_name = Param::get('klub_name');
                 $klub->klub_details = Param::get('klub_details');
                 try {
-                    if(!$klub->addklub()){
-                        $page = 'addklub';
-                    } else {
-                        $page = 'addklub';
-                        flash_message('message', 'Klub is added!');
-                        flash_message('positive_message', 1);
-                        redirect(url(''));
-                    }
+    
+                    $klub->addKlub();
+                    flash_message('message', 'Klub has been Added!');
+                    flash_message('positive_message', 1);
+                    redirect('index');
                    
                 } catch (ValidationException $e) {
                     $page = 'addklub';
@@ -50,9 +47,9 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
-
-    public function editKlub(){
-        if (!is_logged('logged_in')) {
+    public function editKlub()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $klub = new Klub();
@@ -70,9 +67,11 @@ class AdminController extends AppController
                 $klub->klub_details = Param::get('klub_details');
                 $klub->current_name = $selected_klub['klub_name'];
                 try {
-                    if(!$klub->editklub()){
-                        $page = 'editklub';
-                    }
+                    $klub->editKlub();
+                    flash_message('message', 'Klub has been Edited!');
+                    flash_message('positive_message', 1);
+                    redirect('index');
+                    
                    
                 } catch (ValidationException $e) {
                     $page = 'editklub';
@@ -88,7 +87,7 @@ class AdminController extends AppController
 
     public function deleteKlub()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $klub = new Klub();    
@@ -103,31 +102,29 @@ class AdminController extends AppController
         redirect('index');
     }
 
-    public function addUser() {
-        if (!is_logged('logged_in')) {
+    public function addUser()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $user = new user();
         $mailing = new Mailing();
         $page = Param::get('page_next', 'adduser');
         switch ($page) {
-
             case 'adduser':
 
                 break;
-
             case 'user_ok': 
-               
                 $user->fname = Param::get('fname');
                 $user->lname = Param::get('lname');
                 $user->username = Param::get('username');
                 $user->email = Param::get('part_email')."@klab.com";
-                $user->type = Param::get('type',0);
+                $user->type = Param::get('type',NORMAL);
                 $user->password = rand_string(6);
                 $mailing->email_ad = $user->email;
                 $mailing->subject = "You have been Invited to Klabhouse!";
                 $mailing->body = "Congratulations $user->fname $user->lname !
-                    <p>sign in with this E-mail and password : $user->password </p>";
+                    <p>sign in with this $user->username and password : $user->password </p>";
                 try {
                     if(!$user->addUser()) {
                         $page = 'adduser';
@@ -152,7 +149,7 @@ class AdminController extends AppController
 
     public function userList()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $user = new user();
@@ -162,7 +159,7 @@ class AdminController extends AppController
 
     public function deleteUser()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $user = new user();   
@@ -175,5 +172,36 @@ class AdminController extends AppController
             flash_message('message', 'User to delete does not exist!');
         }
         redirect('userlist');
+    }
+
+    public function viewUserKlubs()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
+            redirect(url('/'));
+        }
+        $user = new User();
+        $member = new Member();
+        $user->user_id = Param::get('id');
+        $member->user_id = Param::get('id');
+        $user_info = $user->getUser();
+        $klubs = $member->getUserBoth();
+        $this->set(get_defined_vars());
+       
+    }
+
+    public function changeMemberLevel()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
+            redirect(url('/'));
+        }
+        $member = new Member();
+        $member->id = Param::get('member_id');
+        $member->user_id = Param::get('user_id');
+        $member->level = Param::get('level');
+        $member->updated = Param::get('updated', 0);
+        $member->changeLevel();
+        flash_message('message', 'Success!');
+        flash_message('positive_message', 1);
+        redirect(url('admin/viewuserklubs', array("id" => $member->user_id)));
     }
 }

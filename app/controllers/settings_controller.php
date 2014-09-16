@@ -6,7 +6,7 @@ class SettingsController extends AppController
     */
     public function userInfo ()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in')){
             redirect(url('/'));
         }
         $user = new User();
@@ -28,7 +28,6 @@ class SettingsController extends AppController
                     $logged_user = $user->updateUser();
                     if ($logged_user)
                     {
-                        print_r($logged_user);
                         set_session('logged_in',$logged_user);
                     } else {
                         $page = 'userinfo';
@@ -51,7 +50,7 @@ class SettingsController extends AppController
     */
     public function passwordChange ()
     {
-        if (!is_logged('logged_in')) {
+        if(!is_logged('logged_in')){
             redirect(url('/'));
         }
         $user = new User();

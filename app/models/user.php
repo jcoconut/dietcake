@@ -239,6 +239,15 @@ class User extends AppModel
     }
     
     /**
+    * get one user
+    */
+    public function getUser(){
+        $db = DB::conn();
+        $user = $db->row("SELECT fname,lname FROM user WHERE id = ?", array($this->user_id));
+        return $user;
+    }
+
+    /**
     * delete user
     */
     public function deleteUser ()
