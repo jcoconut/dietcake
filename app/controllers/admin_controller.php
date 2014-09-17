@@ -1,7 +1,9 @@
 <?php
 class AdminController extends AppController
 {
-   
+    /**
+    * admin home page
+    */
     public function index()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -12,6 +14,9 @@ class AdminController extends AppController
         $this->set(get_defined_vars());    
     }
 
+    /**
+    * add klub
+    */
     public function addKlub()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -32,7 +37,7 @@ class AdminController extends AppController
     
                     $klub->addKlub();
                     flash_message('message', 'Klub has been Added!');
-                    flash_message('positive_message', 1);
+                    flash_message('positive_message', true);
                     redirect('index');
                    
                 } catch (ValidationException $e) {
@@ -47,6 +52,9 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
+    /**
+    * edit klub
+    */
     public function editKlub()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -70,9 +78,7 @@ class AdminController extends AppController
                     $klub->editKlub();
                     flash_message('message', 'Klub has been Edited!');
                     flash_message('positive_message', 1);
-                    redirect('index');
-                    
-                   
+                    redirect('index');   
                 } catch (ValidationException $e) {
                     $page = 'editklub';
                 }
@@ -85,6 +91,9 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
+    /**
+    * delete klub
+    */
     public function deleteKlub()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -102,6 +111,9 @@ class AdminController extends AppController
         redirect('index');
     }
 
+    /**
+    * add user
+    */
     public function addUser()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -132,7 +144,6 @@ class AdminController extends AppController
                         $page = 'adduser';
                         $mailing->sendMail();
                         redirect(url(''));
-
                     }
                    
                 } catch (ValidationException $e) {
@@ -147,16 +158,30 @@ class AdminController extends AppController
         $this->render($page);    
     }
 
+    /**
+    * user list
+    */
     public function userList()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
-        }
+        }  
+
         $user = new user();
-        $users = $user->getUsers();
+        $user->page_num = Param::get('page_num', 1);    
+        $users = $user->getUsers(ITEMS_PER_PAGE);
+
+        $page = new Pagination();
+        $page->total_rows = User::countUsers();
+        $page->per_page = ITEMS_PER_PAGE;
+        $paginate = $page->pageIt();
+
         $this->set(get_defined_vars());
     }
 
+    /**
+    * delete user
+    */
     public function deleteUser()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -167,13 +192,39 @@ class AdminController extends AppController
         $deleted = $user->deleteUser();
         if($deleted) {
             flash_message('message', 'User has been deleted!');
-            flash_message('positive_message', 1);
+            flash_message('positive_message', true);
         } else {
             flash_message('message', 'User to delete does not exist!');
         }
         redirect('userlist');
     }
 
+    /**
+    * members list
+    */
+    public function memberList()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
+            redirect(url('/'));
+        }
+        $klub = new Klub();
+        $member = new Member();
+        $member->page_num = Param::get('page_num', 1);        
+        $member->klub_id = $klub->klub_id = Param::get('id');
+        $selected_klub = $klub->getKlub();
+        $members = $member->getKlubMembers(ITEMS_PER_PAGE);
+
+        $page = new Pagination();
+        $page->total_rows = $member->countMembers();
+        $page->per_page = ITEMS_PER_PAGE;
+        $page->extra_query = array("id=$member->klub_id");
+        $paginate = $page->pageIt();
+        $this->set(get_defined_vars());
+    }
+
+    /**
+    * view a user's klubs
+    */
     public function viewUserKlubs()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -189,6 +240,9 @@ class AdminController extends AppController
        
     }
 
+    /**
+    * change member's level
+    */
     public function changeMemberLevel()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
@@ -201,7 +255,7 @@ class AdminController extends AppController
         $member->updated = Param::get('updated', 0);
         $member->changeLevel();
         flash_message('message', 'Success!');
-        flash_message('positive_message', 1);
+        flash_message('positive_message', true);
         redirect(url('admin/viewuserklubs', array("id" => $member->user_id)));
     }
 }

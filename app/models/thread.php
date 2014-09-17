@@ -65,7 +65,7 @@ class Thread extends AppModel
         $start = ($this->page_num - 1) * $records_per_page ;
 
         $comment_counts = "(SELECT COUNT(id) FROM comment WHERE thread.id = comment.thread_id)";
-        $last_posted = "(SELECT user.username FROM comment LEFT JOIN user ON comment.id=user.id
+        $last_posted = "(SELECT user.username FROM comment LEFT JOIN user ON comment.user_id=user.id
             WHERE comment.thread_id=thread.id ORDER BY comment.created DESC LIMIT 1)";
         $time_last_posted = "(SELECT comment.created FROM comment LEFT JOIN user ON comment.user_id=user.id
             WHERE comment.thread_id=thread.id ORDER BY comment.created DESC LIMIT 1)";
@@ -73,7 +73,7 @@ class Thread extends AppModel
             $comment_counts AS comment_count, $last_posted AS last_posted, $time_last_posted as when_last";
 
         $thread_rows = $db->rows("SELECT $select_statements FROM thread
-            LEFT JOIN user ON thread.id=user.id ORDER BY when_last DESC LIMIT $start,$records_per_page");
+            LEFT JOIN user ON thread.user_id=user.id ORDER BY when_last DESC LIMIT $start,$records_per_page");
         return $thread_rows;
     }
 

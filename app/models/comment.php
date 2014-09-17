@@ -2,7 +2,6 @@
 class Comment extends AppModel
 {
     
-
     public $validation = array(
         
         'body' => array(
@@ -11,6 +10,7 @@ class Comment extends AppModel
             ),
         ),
     );
+
     /**
     * insert a new comment
     * @param $thread_id

@@ -6,7 +6,7 @@ class SettingsController extends AppController
     */
     public function userInfo ()
     {
-        if(!is_logged('logged_in')){
+        if(!is_logged('logged_in')) {
             redirect(url('/'));
         }
         $user = new User();
@@ -26,8 +26,7 @@ class SettingsController extends AppController
                 $user->current_email = get_session('logged_in', 'email');
                 try {
                     $logged_user = $user->updateUser();
-                    if ($logged_user)
-                    {
+                    if ($logged_user) {
                         set_session('logged_in',$logged_user);
                     } else {
                         $page = 'userinfo';
@@ -50,7 +49,7 @@ class SettingsController extends AppController
     */
     public function passwordChange ()
     {
-        if(!is_logged('logged_in')){
+        if(!is_logged('logged_in')) {
             redirect(url('/'));
         }
         $user = new User();
@@ -66,10 +65,9 @@ class SettingsController extends AppController
                 $user->password = Param::get('password');
                 $user->id = get_session('logged_in','id');
                 try {
-                    if ( $user->passwordChange() )
-                    {
+                    if ($user->passwordChange()) {
 
-                    }else{
+                    } else {
                         $page = 'passwordchange';
                     }
                 } catch (ValidationException $e) {
@@ -81,9 +79,7 @@ class SettingsController extends AppController
                 throw new NotFoundException("{$page} is not found");
                 break;
         }
-        
         $this->set(get_defined_vars());
         $this->render($page);
     }
-
 }

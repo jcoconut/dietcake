@@ -3,6 +3,7 @@ class Mailing{
     public $email_ad = "";
     public $subject = "";
     public $body = "";
+    
     /**
     * Send Email
     */
@@ -17,15 +18,13 @@ class Mailing{
         $mail->SMTPSecure = "tls";                
         $mail->Host       = "smtp.gmail.com";      
         $mail->Port       = 587;                   
-        $mail->Username   = "jalbinco@gmail.com";  
-        $mail->Password   = "";            // GMAIL password
-        $mail->SetFrom('klabhouse@klab.com', 'Klabhouse Admin');
-        $mail->AddReplyTo("klabhouse@klab.com","Klabhouse Admin");
+        $mail->Username   = "messenger.klabhouse@gmail.com";  
+        $mail->Password   = "klabklab";
+        $mail->SetFrom('messenger.klabhouse@gmail.com', 'Klabhouse Admin');
+        $mail->AddReplyTo("messenger.klabhouse@gmail.com","Klabhouse Admin");
         $mail->Subject    = $this->subject;
         $mail->AltBody    = "To view the message, please use an HTML compatible email viewer!"; 
         $mail->MsgHTML($this->body);
-
-        $address = "jay.co@klab.com";
         $mail->AddAddress($this->email_ad, "Human");
 
         if(!$mail->Send()) {

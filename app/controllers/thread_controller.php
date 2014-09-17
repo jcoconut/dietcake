@@ -1,29 +1,25 @@
 <?php
 class ThreadController extends AppController
 {
-    const THREADS_PER_PAGE = 10;
-    const COMMENTS_PER_PAGE = 10;
-
     /**
     * thread list
     */
     public function threads()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
-        
         $thread = new Thread();
         $thread->page_num = Param::get('page_num', 1);        
-        $threads = $thread->getAll(self::THREADS_PER_PAGE);
+        $threads = $thread->getAll(ITEMS_PER_PAGE);
         if (count($threads)>0) {
             $page = new Pagination();
             $page->total_rows = Thread::countThreads();
-            $page->per_page = self::THREADS_PER_PAGE;
+            $page->per_page = ITEMS_PER_PAGE;
             $paginate = $page->pageIt();
         }
         if (Thread::countThreads() > 0 && count($threads) == 0) {
-            $threads = "not exist";
+            $threads = "none";
         }
         $this->set(get_defined_vars());
     }
@@ -34,13 +30,11 @@ class ThreadController extends AppController
     public function createThread()
     {
         
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
-
         $thread = new Thread;
         $comment = new Comment;
-        
         $page = Param::get('page_next', 'create');
         switch ($page)
         {
@@ -74,17 +68,17 @@ class ThreadController extends AppController
     */
     public function viewThread()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
         $view_thread = $thread->get(Param::get('id'));
         $thread->id = $view_thread['id'];
-        $comments = $thread->getComments($thread->id, self::COMMENTS_PER_PAGE);  
+        $comments = $thread->getComments($thread->id, ITEMS_PER_PAGE);  
         $page = new Pagination();
         $page->total_rows = $thread->countComments();
-        $page->per_page = self::COMMENTS_PER_PAGE;
+        $page->per_page = ITEMS_PER_PAGE;
         $page->extra_query = array("id=$thread->id");
         $paginate = $page->pageIt();
         $this->set(get_defined_vars());
@@ -95,7 +89,7 @@ class ThreadController extends AppController
     */
     public function writeComment()
     {   
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $comment = new Comment;
@@ -118,7 +112,6 @@ class ThreadController extends AppController
                 throw new NotFoundException("{$page} is not found");
                 break;
         }
-
     }
 
 }

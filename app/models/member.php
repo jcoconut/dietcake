@@ -1,18 +1,26 @@
 <?php
 class Member extends AppModel
 {
-    
-    public function addRequest(){
+    /**
+    * add member as level 0
+    * @return true
+    */
+    public function addRequest()
+    {
         $db = DB::conn();
         $params = array(
             "klub_id" => $this->klub_id,
             "user_id" => $this->user_id,
-            "level" => 0,
+            "level" => REQUESTED,
         );
         $db->insert("member", $params);
         return true;
     }
 
+    /**
+    * get user requests
+    * @return $requests
+    */
     public function getUserRequests()
     {
         $requests = "";
@@ -25,6 +33,10 @@ class Member extends AppModel
         return $requests;
     }
 
+    /**
+    * get klub requests
+    * @return $requests
+    */
     public function getKlubRequests()
     {
         $columns = "member.id,klub.klub_name,member.user_id,member.klub_id,user.fname,member.created";
@@ -38,6 +50,10 @@ class Member extends AppModel
         return $requests;
     }
 
+    /**
+    * get user's memberships
+    * @return $memberships
+    */
     public function getUserMemberships()
     {
         $memberships = array();
@@ -50,6 +66,10 @@ class Member extends AppModel
         return $memberships;
     }
 
+    /**
+    * get user's leaderships
+    * @return $leaderships
+    */
     public function getUserLeaderships()
     {
         $leaderships = array();
@@ -61,16 +81,39 @@ class Member extends AppModel
         }
         return $leaderships;
     }
-    public function getKlubMembers()
+
+    /**
+    * count members of a klub
+    * @return $count
+    */
+    public function countMembers()
     {
         $db = DB::conn();
+        $count = $db->row("SELECT COUNT(*) as count FROM member
+            WHERE klub_id = ?", array($this->klub_id));
+        return $count['count'];
+    }
+
+    /**
+    * get members of klub
+    * @param $records_per_page
+    * @return $members
+    */
+    public function getKlubMembers($records_per_page)
+    {
+        $db = DB::conn();
+        $start = ($this->page_num - 1) * $records_per_page ;
         $members = $db->rows("SELECT * from member
             LEFT JOIN user ON member.user_id=user.id
-            WHERE klub_id = ? AND level != ?", array($this->id,REQUESTED));
+            WHERE klub_id = ? AND level != ?
+            ORDER BY member.updated DESC
+            LIMIT $start,$records_per_page", array($this->klub_id,REQUESTED));
         return $members;
     }
+
     /**
     * get member leader/member
+    * @return $klubs
     */
     public function getUserBoth()
     {
@@ -80,6 +123,7 @@ class Member extends AppModel
             WHERE user_id = ?", array($this->user_id));
         return $klubs;
     }
+
     /**
     * add member
     * @return boolean
@@ -96,50 +140,23 @@ class Member extends AppModel
         return true;     
     }
 
+    /**
+    * change member level
+    */
     public function changeLevel()
     {
         $db = DB::conn();
-        if($this->updated){
+        if($this->updated) {
             $params = array(
                 "level" => $this->level,
                 "updated" => date('Y-m-d H:i:s')
-                );
-        }else{
+            );
+        } else {
             $params = array("level" => $this->level);
             
         }
-        
         $where_params = array("id" => $this->id);
         $db->update("member",$params,$where_params);    
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-    * delete member
-    */
-    public function deleteKlub ()
-    {
-       
-        $db = DB::conn();
-        $db->query("DELETE FROM klub WHERE klub_id = ?", array($this->klub_id));
-        $deleted = $db->rowCount();
-        return $deleted;
-
-    }
-  
-    
+    }  
 
 }

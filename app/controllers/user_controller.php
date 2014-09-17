@@ -1,31 +1,29 @@
 <?php
 class UserController extends AppController
 {
-   
-    public function index(){
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+    /**
+    * user home page
+    */
+    public function index()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) 
             redirect(url('/'));
         }
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
-        // print_r("<pre>");
-        // print_r($member->klubs);
-        // print_r("</pre>");
-
         if(count($member->klubs) > 0){
             $requests = $member->getKlubRequests();
-            // print_r("<pre>");
-            // print_r($requests);
-            // print_r("</pre>");
         }
-        
-      
         $this->set(get_defined_vars());    
     }
 
-    public function klubs(){
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+    /**
+    * klub list
+    */
+    public function klubs()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $klub = new Klub();
@@ -39,8 +37,12 @@ class UserController extends AppController
         $this->set(get_defined_vars());    
    }
 
-    public function join(){
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+    /**
+    * join the klub
+    */
+    public function join()
+    {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $member = new Member();
@@ -49,26 +51,42 @@ class UserController extends AppController
         $member->user_id = get_session('logged_in','id');
         $requested = $member->addRequest();
         if($requested) {
-            $message = "You requested to join $member->klub_name,<br>please wait to be accepted";
+            $message = "You requested to join $member->klub_name,<br>Please wait to be accepted";
             flash_message("message", $message);
             flash_message('positive_message', 1);
         }
         redirect('klubs');
     }
+
+    /**
+    * klub members
+    */
     public function memberList()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
-        $member = new member();
-        $member->id = Param::get('id');
-        $members = $member->getKlubMembers();
+        $klub = new Klub();
+        $member = new Member();
+        $member->page_num = Param::get('page_num', 1);        
+        $member->klub_id = $klub->klub_id = Param::get('id');
+        $selected_klub = $klub->getKlub();
+        $members = $member->getKlubMembers(ITEMS_PER_PAGE);
+        
+        $page = new Pagination();
+        $page->total_rows = $member->countMembers();
+        $page->per_page = ITEMS_PER_PAGE;
+        $page->extra_query = array("id=$member->klub_id");
+        $paginate = $page->pageIt();
         $this->set(get_defined_vars());
     }
 
+    /**
+    * view user's klubs
+    */
     public function viewUserKlubs()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $user = new User();
@@ -78,34 +96,14 @@ class UserController extends AppController
         $user_info = $user->getUser();
         $klubs = $member->getUserBoth();
         $this->set(get_defined_vars());
-       
     }
-    // public function deleteUser()
-    // {
-    //     if(!is_logged('logged_in')){
-    //         redirect(url('/'));
-    //     }
-    //     $user = new user();   
-    //     $user->id = Param::get('id');
-    //     $deleted = $user->deleteUser();
-    //     if($deleted) {
-    //         flash_message('message', 'User has been deleted!');
-    //         flash_message('positive_message', 1);
-    //     } else {
-    //         flash_message('message', 'User to delete does not exist!');
-    //     }
-    //     redirect('userlist');
-    // }
-    // public function userList()
-    // {
-    //     if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
-    //         redirect(url('/'));
-    //     }
-
-    // }
+    
+    /**
+    * accept request
+    */
     public function acceptRequest()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN){
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $member = new Member();

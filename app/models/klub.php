@@ -36,8 +36,8 @@ class Klub extends AppModel
     }
 
     /**
-    * get all klubs
-    * @return $klubs
+    * get klub
+    * @return $klub
     */
     public function getKlub()
     {  
@@ -51,8 +51,7 @@ class Klub extends AppModel
     * @return boolean
     */
     public function addKlub()
-    {
-       
+    {  
         if (!$this->validate()) {
             throw new ValidationException();
         }
@@ -61,7 +60,7 @@ class Klub extends AppModel
         if($this->checkKlubExist()) {
             $this->klub_taken = true;
         }
-     
+        
         if($this->klub_taken) {
             throw new ValidationException();
             return false;
@@ -79,10 +78,14 @@ class Klub extends AppModel
         
     }
 
-
-    public function checkKlubExist(){
+    /**
+    * check if klub exist
+    * @return $found
+    */
+    public function checkKlubExist()
+    {
         $db = DB::conn();
-        $found = $db->row("SELECT * FROM klub
+        $found = $db->row("SELECT klub_name FROM klub
             WHERE klub_name = ? " , array($this->klub_name));
         return $found;
     }
@@ -90,7 +93,7 @@ class Klub extends AppModel
     /**
     * update klub info
     */
-    public function editKlub ()
+    public function editKlub()
     {
         $this->validate();
         if ($this->hasError()) {
@@ -98,8 +101,7 @@ class Klub extends AppModel
         }
         $db = DB::conn();
         $db->begin();
-        if(!is_same($this->current_name, $this->klub_name) and $this->checkKlubExist())
-        {
+        if(!is_same($this->current_name, $this->klub_name) and $this->checkKlubExist()) {
             $this->klub_taken = true;
         }
         if($this->klub_taken) {
@@ -120,6 +122,7 @@ class Klub extends AppModel
 
     /**
     * delete klub
+    * @return $deleted
     */
     public function deleteKlub ()
     {

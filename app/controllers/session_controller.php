@@ -33,7 +33,7 @@ class SessionController extends AppController
             redirect(url('admin/index'));
         } else {
             flash_message('login_failed', 'Login credentials invalid!' ); 
-            // redirect(url('/'));
+            redirect(url('/'));
         }   
     }
 
@@ -46,8 +46,4 @@ class SessionController extends AppController
         redirect(url('/'));
     }
 
-
-    public function testing(){
-        
-    }
 }
