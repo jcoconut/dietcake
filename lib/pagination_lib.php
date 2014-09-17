@@ -111,12 +111,12 @@ class Pagination {
             // If not on 1st page show previous page button
             if ($this->page_num != 1) {
                 $previous = $this->page_num - 1;
-                $left =  '  <li class=""><a href="'.'?page_num='.$previous.'"> &laquo;</a></li> ';
+                $left =  '  <li class=""><a href="'.$added_query.'page_num='.$previous.'"> &laquo;</a></li> ';
             }     
             // If not on last page show next page button
             if ($this->page_num != $this->lastpage) {
                 $nextPage = $this->page_num + 1;
-                $right =  ' <li class=""><a href="'.'?page_num='.$nextPage.'"> &raquo;</a></li> ';
+                $right =  ' <li class=""><a href="'.$added_query.'page_num='.$nextPage.'"> &raquo;</a></li> ';
             } 
              $pages .= '<ul class="pagination">' .$left. $num_pages.$right.'</ul>';
         }

@@ -12,6 +12,7 @@ class UserController extends AppController
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
+        $klubs = $member->getUserBoth();
         if(count($member->klubs) > 0) {
             $requests = $member->getKlubRequests();
         }
