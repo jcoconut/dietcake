@@ -4,9 +4,10 @@ class Thread extends AppModel
     public $validation = array(
         'title' => array(
             'length' => array(
-                'is_between', 1, 30,
+                'is_between', MIN_CHAR, MAX_CHAR_THREAD_TITLE,
             ),
-        ),
+        )
+        
     );
     
     /**
@@ -23,7 +24,9 @@ class Thread extends AppModel
         $db->begin();
         $params = array(
             "title" => $this->title,
-            "user_id" => $comment->user_id 
+            "klub_id" => $this->klub_id,
+            "privacy" => $this->privacy,
+            "user_id" => $comment->user_id
             );
         $db->insert("thread", $params);
         $this->id = $db->lastInsertId();
@@ -69,11 +72,12 @@ class Thread extends AppModel
             WHERE comment.thread_id=thread.id ORDER BY comment.created DESC LIMIT 1)";
         $time_last_posted = "(SELECT comment.created FROM comment LEFT JOIN user ON comment.user_id=user.id
             WHERE comment.thread_id=thread.id ORDER BY comment.created DESC LIMIT 1)";
-        $select_statements = "thread.id,thread.title,thread.created,user.username,
+        $select_statements = "thread.id,title,thread.created,privacy,klub_id,username,
             $comment_counts AS comment_count, $last_posted AS last_posted, $time_last_posted as when_last";
 
         $thread_rows = $db->rows("SELECT $select_statements FROM thread
-            LEFT JOIN user ON thread.user_id=user.id ORDER BY when_last DESC LIMIT $start,$records_per_page");
+            LEFT JOIN user ON thread.user_id=user.id ORDER BY when_last
+            DESC LIMIT $start,$records_per_page");
         return $thread_rows;
     }
 

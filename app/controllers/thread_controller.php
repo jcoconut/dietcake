@@ -9,6 +9,9 @@ class ThreadController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $member = new Member();
+        $member->user_id = get_session('logged_in','id');
+        $klubs = $member->getUserKlubs();
         $thread = new Thread();
         $thread->page_num = Param::get('page_num', 1);        
         $threads = $thread->getAll(ITEMS_PER_PAGE);
@@ -35,6 +38,9 @@ class ThreadController extends AppController
         }
         $thread = new Thread;
         $comment = new Comment;
+        $member = new Member();
+        $member->user_id = get_session('logged_in','id');
+        $klubs = $member->getUserBoth();
         $page = Param::get('page_next', 'create');
         switch ($page)
         {
@@ -42,6 +48,8 @@ class ThreadController extends AppController
                 break;
             case 'create_end':
                 $thread->title = Param::get('title');
+                $thread->privacy = Param::get('privacy');
+                $thread->klub_id = Param::get('klub_id');
                 $comment->user_id = get_session('logged_in', 'id');
                 $comment->body = Param::get('body');
                 try {

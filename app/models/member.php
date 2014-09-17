@@ -125,16 +125,33 @@ class Member extends AppModel
     }
 
     /**
+    * get user klubs id array
+    * @return $klub_ids
+    */
+    public function getUserKlubs()
+    {
+        $klub_ids = array();
+        $db = DB::conn();
+        $klubs = $db->rows("SELECT member.klub_id from member
+            WHERE user_id = ?", array($this->user_id));
+        foreach ($klubs as $klub) {
+            $klub_ids[] = $klub['klub_id'];
+        }
+        return $klub_ids;
+    }
+
+    /**
     * add member
     * @return boolean
     */
     public function acceptMember()
     {
         $db = DB::conn();             
-        $params = array("level" => 1);
+        $params = array(
+            "level" => 1,
+            "updated" => date('Y-m-d H:i:s'));
         $where_params = array(
-            "id" => $this->id,
-            "updated" => date('Y-m-d H:i:s')
+            "id" => $this->id
             );
         $db->update("member",$params,$where_params);
         return true;     

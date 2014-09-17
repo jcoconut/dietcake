@@ -6,13 +6,13 @@ class UserController extends AppController
     */
     public function index()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) 
+        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
-        if(count($member->klubs) > 0){
+        if(count($member->klubs) > 0) {
             $requests = $member->getKlubRequests();
         }
         $this->set(get_defined_vars());    

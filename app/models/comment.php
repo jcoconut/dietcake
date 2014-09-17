@@ -9,6 +9,11 @@ class Comment extends AppModel
             'required',
             ),
         ),
+        'body' => array(
+            'length' => array(
+                'is_between', MIN_CHAR, MAX_CHAR_BODY,
+            ),
+        )
     );
 
     /**
