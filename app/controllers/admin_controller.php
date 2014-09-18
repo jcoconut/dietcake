@@ -119,7 +119,7 @@ class AdminController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
-        $user = new user();
+        $user = new User();
         $mailing = new Mailing();
         $page = Param::get('page_next', 'adduser');
         switch ($page) {
@@ -167,7 +167,7 @@ class AdminController extends AppController
             redirect(url('/'));
         }  
 
-        $user = new user();
+        $user = new User();
         $user->page_num = Param::get('page_num', 1);    
         $users = $user->getUsers(ITEMS_PER_PAGE);
 
@@ -187,7 +187,7 @@ class AdminController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
-        $user = new user();   
+        $user = new User();   
         $user->id = Param::get('id');
         $deleted = $user->deleteUser();
         if($deleted) {
