@@ -14,6 +14,8 @@ require_once HELPERS_DIR.'session_helper.php';
 //vendor
 require_once VENDOR_DIR.'SimpleDBI/src/SimpleDBI.php';
 require_once VENDOR_DIR.'phpmailer/PHPMailerAutoload.php';
+require_once VENDOR_DIR.'google-api-php-client/apiClient.php';
+require_once VENDOR_DIR.'google-api-php-client/contrib/apiOauth2Service.php';
 
 // config
 require_once CONFIG_DIR.'log.php';
