@@ -9,6 +9,7 @@ class SettingsController extends AppController
         if(!is_logged('logged_in')) {
             redirect(url('/'));
         }
+        $menu = "settings";
         $user = new User();
         $page = Param::get('page_next', 'userinfo');
         switch ($page) {
@@ -19,11 +20,7 @@ class SettingsController extends AppController
             
                 $user->fname = Param::get('fname');
                 $user->lname = Param::get('lname');
-                $user->username = Param::get('username');
-                $user->email = Param::get('email');
                 $user->id = get_session('logged_in', 'id');
-                $user->current_username = get_session('logged_in', 'username');
-                $user->current_email = get_session('logged_in', 'email');
                 try {
                     $logged_user = $user->updateUser();
                     if ($logged_user) {
@@ -47,9 +44,9 @@ class SettingsController extends AppController
     /**
     * Password change 
     */
-    public function passwordChange ()
+    public function passwordChange()
     {
-        if(!is_logged('logged_in')) {
+        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
         $user = new User();

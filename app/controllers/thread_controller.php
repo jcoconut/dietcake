@@ -9,6 +9,7 @@ class ThreadController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $menu = "threads";
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $klubs = $member->getUserKlubs();
@@ -36,6 +37,7 @@ class ThreadController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $menu = "threads";
         $thread = new Thread;
         $comment = new Comment;
         $member = new Member();
@@ -79,6 +81,7 @@ class ThreadController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $menu = "threads";
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
         $view_thread = $thread->get(Param::get('id'));

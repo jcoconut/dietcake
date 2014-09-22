@@ -27,7 +27,11 @@
 	<div class="panel small-12 columns">
 		<div class="row">
 			<div class="left medium-6 columns">
+				<?php if(isset($comment['image'])): ?>
+				<img class="left" src="<?php echo $comment['image']; ?>" style="max-height:50px;max-width:50px;">
+				<?php else: ?>
 				<img class="left" src="http://placecage.com/50/50">
+				<?php endif; ?>
 				<small class=""><?php safe_output($comment['fname']) ?></small><br>
 				<small class="">New Member</small><br>
 

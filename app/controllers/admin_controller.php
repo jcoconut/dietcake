@@ -112,53 +112,6 @@ class AdminController extends AppController
     }
 
     /**
-    * add user
-    */
-    public function addUser()
-    {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
-        $user = new User();
-        $mailing = new Mailing();
-        $page = Param::get('page_next', 'adduser');
-        switch ($page) {
-            case 'adduser':
-
-                break;
-            case 'user_ok': 
-                $user->fname = Param::get('fname');
-                $user->lname = Param::get('lname');
-                $user->username = Param::get('username');
-                $user->email = Param::get('part_email')."@klab.com";
-                $user->type = Param::get('type',NORMAL);
-                $user->password = rand_string(6);
-                $mailing->email_ad = $user->email;
-                $mailing->subject = "You have been Invited to Klabhouse!";
-                $mailing->body = "Congratulations $user->fname $user->lname !
-                    <p>sign in with this $user->username and password : $user->password </p>";
-                try {
-                    if(!$user->addUser()) {
-                        $page = 'adduser';
-                    } else {
-                        $page = 'adduser';
-                        $mailing->sendMail();
-                        redirect(url(''));
-                    }
-                   
-                } catch (ValidationException $e) {
-                    $page = 'adduser';
-                }
-                break;
-            default:
-                throw new NotFoundException("{$page} is not found");
-                break;
-        }
-        $this->set(get_defined_vars());
-        $this->render($page);    
-    }
-
-    /**
     * user list
     */
     public function userList()
@@ -167,12 +120,12 @@ class AdminController extends AppController
             redirect(url('/'));
         }  
 
-        $user = new User();
+        $user = new Users();
         $user->page_num = Param::get('page_num', 1);    
         $users = $user->getUsers(ITEMS_PER_PAGE);
 
         $page = new Pagination();
-        $page->total_rows = User::countUsers();
+        $page->total_rows = Users::countUsers();
         $page->per_page = ITEMS_PER_PAGE;
         $paginate = $page->pageIt();
 
@@ -182,14 +135,14 @@ class AdminController extends AppController
     /**
     * delete user
     */
-    public function deleteUser()
+    public function deleteUsers()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
-        $user = new User();   
+        $user = new Users();   
         $user->id = Param::get('id');
-        $deleted = $user->deleteUser();
+        $deleted = $user->deleteUsers();
         if($deleted) {
             flash_message('message', 'User has been deleted!');
             flash_message('positive_message', true);
@@ -230,7 +183,7 @@ class AdminController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
             redirect(url('/'));
         }
-        $user = new User();
+        $user = new Users();
         $member = new Member();
         $user->user_id = Param::get('id');
         $member->user_id = Param::get('id');

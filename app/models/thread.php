@@ -68,15 +68,15 @@ class Thread extends AppModel
         $start = ($this->page_num - 1) * $records_per_page ;
 
         $comment_counts = "(SELECT COUNT(id) FROM comment WHERE thread.id = comment.thread_id)";
-        $last_posted = "(SELECT user.username FROM comment LEFT JOIN user ON comment.user_id=user.id
+        $last_posted = "(SELECT users.fname FROM comment LEFT JOIN users ON comment.user_id=users.id
             WHERE comment.thread_id=thread.id ORDER BY comment.created DESC LIMIT 1)";
-        $time_last_posted = "(SELECT comment.created FROM comment LEFT JOIN user ON comment.user_id=user.id
+        $time_last_posted = "(SELECT comment.created FROM comment LEFT JOIN users ON comment.user_id=users.id
             WHERE comment.thread_id=thread.id ORDER BY comment.created DESC LIMIT 1)";
-        $select_statements = "thread.id,title,thread.created,privacy,klub_id,username,
+        $select_statements = "thread.id,title,thread.created,privacy,klub_id,fname,
             $comment_counts AS comment_count, $last_posted AS last_posted, $time_last_posted as when_last";
 
         $thread_rows = $db->rows("SELECT $select_statements FROM thread
-            LEFT JOIN user ON thread.user_id=user.id ORDER BY when_last
+            LEFT JOIN users ON thread.user_id=users.id ORDER BY when_last
             DESC LIMIT $start,$records_per_page");
         return $thread_rows;
     }
@@ -89,9 +89,9 @@ class Thread extends AppModel
     public static function get($id)
     {
         $db = DB::conn();
-        $select_statements = "thread.title,thread.id,thread.created,user.fname";
+        $select_statements = "title,thread.id,thread.created,users.fname";
         $thread_row = $db->row("SELECT $select_statements FROM thread
-            LEFT JOIN user ON thread.user_id=user.id
+            LEFT JOIN users ON thread.user_id=users.id
             WHERE thread.id = ?" , array($id));
         return $thread_row;
     }
@@ -106,10 +106,10 @@ class Thread extends AppModel
     {
         $db = DB::conn();
         $start = ($this->page_num - 1) * $records_per_page ;
-        $select_statements = "user.fname,comment.id as comment_id,comment.body,comment.created";
+        $select_statements = "users.fname,comment.id as comment_id,comment.body,comment.created,image";
         $comment_rows = $db->rows(
-        "SELECT $select_statements FROM comment LEFT JOIN user
-            ON comment.user_id=user.id
+        "SELECT $select_statements FROM comment LEFT JOIN users
+            ON comment.user_id=users.id
             WHERE thread_id = ? ORDER BY created ASC
             LIMIT $start,$records_per_page",
             array($id)

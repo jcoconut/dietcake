@@ -9,6 +9,7 @@ class UserController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $menu = "home";
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
@@ -27,6 +28,7 @@ class UserController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $menu = "klubs";
         $klub = new Klub();
         $klubs = $klub->getKlubs();
 
@@ -67,13 +69,14 @@ class UserController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
+        $menu = "klubs";
         $klub = new Klub();
         $member = new Member();
         $member->page_num = Param::get('page_num', 1);        
         $member->klub_id = $klub->klub_id = Param::get('id');
         $selected_klub = $klub->getKlub();
         $members = $member->getKlubMembers(ITEMS_PER_PAGE);
-        
+
         $page = new Pagination();
         $page->total_rows = $member->countMembers();
         $page->per_page = ITEMS_PER_PAGE;
@@ -90,7 +93,8 @@ class UserController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
-        $user = new User();
+        $menu = "klubs";
+        $user = new Users();
         $member = new Member();
         $user->user_id = Param::get('id');
         $member->user_id = Param::get('id');

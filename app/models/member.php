@@ -39,11 +39,11 @@ class Member extends AppModel
     */
     public function getKlubRequests()
     {
-        $columns = "member.id,klub.klub_name,member.user_id,member.klub_id,user.fname,member.created";
+        $columns = "member.id,klub.klub_name,member.user_id,member.klub_id,users.fname,member.created";
         $db = DB::conn();
         $klubs = implode(", ", $this->klubs); 
         $requests = $db->rows("SELECT $columns from member
-            LEFT JOIN user ON member.user_id=user.id
+            LEFT JOIN users ON member.user_id=users.id
             LEFT JOIN klub ON member.klub_id=klub.klub_id
             WHERE level = ? AND
             member.klub_id IN ($klubs)", array(REQUESTED));
@@ -102,9 +102,10 @@ class Member extends AppModel
     public function getKlubMembers($records_per_page)
     {
         $db = DB::conn();
-        $start = ($this->page_num - 1) * $records_per_page ;
-        $members = $db->rows("SELECT * from member
-            LEFT JOIN user ON member.user_id=user.id
+        $start = ($this->page_num - 1) * $records_per_page;
+        $columns = "member.id,user_id,member.updated,level,fname,lname,type";
+        $members = $db->rows("SELECT $columns from member
+            LEFT JOIN users ON member.user_id=users.id
             WHERE klub_id = ? AND level != ?
             ORDER BY member.updated DESC
             LIMIT $start,$records_per_page", array($this->klub_id,REQUESTED));
