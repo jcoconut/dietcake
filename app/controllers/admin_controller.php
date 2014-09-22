@@ -10,7 +10,7 @@ class AdminController extends AppController
             redirect(url('/'));
         }
         $klub = new Klub();
-        $klubs = $klub->getKlubs();
+        $klubs = Klub::getKlubs();
         $this->set(get_defined_vars());    
     }
 
