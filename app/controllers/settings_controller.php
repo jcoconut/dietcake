@@ -4,7 +4,7 @@ class SettingsController extends AppController
     /**
     * view/change user info
     */
-    public function userInfo ()
+    public function userInfo()
     {
         if(!is_logged('logged_in')) {
             redirect(url('/'));
@@ -47,7 +47,7 @@ class SettingsController extends AppController
     /**
     * Password change 
     */
-    public function passwordChange ()
+    public function passwordChange()
     {
         if(!is_logged('logged_in')) {
             redirect(url('/'));
