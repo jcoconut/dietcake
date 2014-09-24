@@ -23,6 +23,12 @@ function redirect_not_admin(){
     }
 }
 
+function redirect_if_admin(){
+    if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
+        redirect(url('/'));
+    }
+}
+
 function flash_message($name = '', $message = '', $class = 'alert', $tag = 'p')
 {
     if( !empty( $name ) ) {

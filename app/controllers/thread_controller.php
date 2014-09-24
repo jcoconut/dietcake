@@ -6,9 +6,7 @@ class ThreadController extends AppController
     */
     public function threads()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $klubs = $member->getUserKlubs();
@@ -33,9 +31,7 @@ class ThreadController extends AppController
     public function create_thread()
     {
         
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $thread = new Thread;
         $comment = new Comment;
         $member = new Member();
@@ -76,9 +72,7 @@ class ThreadController extends AppController
     */
     public function view_thread()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
         $view_thread = $thread->get(Param::get('id'));
@@ -97,9 +91,7 @@ class ThreadController extends AppController
     */
     public function write_comment()
     {   
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $comment = new Comment;
         $comment->thread_id = Param::get('id'); 
         $comment->user_id = get_session('logged_in', 'id');

@@ -6,9 +6,7 @@ class UserController extends AppController
     */
     public function index()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
@@ -24,9 +22,7 @@ class UserController extends AppController
     */
     public function klubs()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $klub = new Klub();
         $klubs = $klub->getKlubs();
 
@@ -43,9 +39,7 @@ class UserController extends AppController
     */
     public function join()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $member = new Member();
         $member->klub_id = Param::get('klub_id');
         $member->klub_name = Param::get('klub_name');
@@ -64,9 +58,7 @@ class UserController extends AppController
     */
     public function member_list()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $klub_id = Param::get('id');
         $selected_klub = Klub::getKlub($klub_id);
         $members = Member::getKlubMembers(ITEMS_PER_PAGE, $klub_id, Param::get('page_num', 1));
@@ -84,9 +76,7 @@ class UserController extends AppController
     */
     public function view_user_klubs()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $user_info = User::getUser(Param::get('id'));
         $klubs = Member::getUserBoth(Param::get('id'));
         $this->set(get_defined_vars());
@@ -97,9 +87,7 @@ class UserController extends AppController
     */
     public function accept_request()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
-            redirect(url('/'));
-        }
+        redirect_if_admin();
         $member = new Member();
         $member->id = Param::get('id');
         $accepted = $member->acceptMember();
