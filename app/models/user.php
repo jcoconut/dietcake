@@ -40,7 +40,7 @@ class User extends AppModel
 
         'username' => array(
             'format' => array(
-                'is_alpha'
+                'is_alpha_nonspaced'
             ),
             'length' => array(
                 'is_between', self::MIN_CHAR, self::MAX_CHAR,

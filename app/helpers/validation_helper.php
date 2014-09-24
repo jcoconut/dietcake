@@ -12,6 +12,12 @@ function required ($input)
     return mb_strlen($input)>0 ;
 }
 
+//checks for username,(no space)
+function is_alpha_nonspaced ($string)
+{
+    return (preg_match('/^[A-Za-z]+$/',$string));
+}
+
 //checks if string is alpha only
 function is_alpha ($string)
 {
