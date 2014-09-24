@@ -62,7 +62,7 @@ class UserController extends AppController
     /**
     * klub members
     */
-    public function memberList()
+    public function member_list()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
@@ -82,7 +82,7 @@ class UserController extends AppController
     /**
     * view user's klubs
     */
-    public function viewUserKlubs()
+    public function view_user_klubs()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
@@ -95,7 +95,7 @@ class UserController extends AppController
     /**
     * accept request
     */
-    public function acceptRequest()
+    public function accept_request()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));

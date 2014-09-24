@@ -30,7 +30,7 @@ class ThreadController extends AppController
     /**
     * create thread
     */
-    public function createThread()
+    public function create_thread()
     {
         
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
@@ -40,7 +40,7 @@ class ThreadController extends AppController
         $comment = new Comment;
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
-        $klubs = $member->getUserBoth();
+        $klubs = $member->getUserBoth($member->user_id);
         $page = Param::get('page_next', 'create');
         switch ($page)
         {
@@ -54,7 +54,7 @@ class ThreadController extends AppController
                 $comment->body = Param::get('body');
                 try {
                     if ( $thread->create($comment) ) {
-                        redirect(url('thread/viewthread', array('id' => $thread->id)));
+                        redirect(url('thread/view_thread', array('id' => $thread->id)));
                     } else {
                         $page = 'create';
                     }
@@ -74,7 +74,7 @@ class ThreadController extends AppController
     /**
     * view thread and its comments
     */
-    public function viewThread()
+    public function view_thread()
     {
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
@@ -95,7 +95,7 @@ class ThreadController extends AppController
     /**
     * writes comment on thread
     */
-    public function writeComment()
+    public function write_comment()
     {   
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
@@ -109,7 +109,7 @@ class ThreadController extends AppController
             case 'write':
                 break;
             case 'write_end':   
-                redirect(url('thread/viewthread', array('id' => $comment->thread_id)));
+                redirect(url('thread/view_thread', array('id' => $comment->thread_id)));
                 try {
                     $comment->write($comment->thread_id);
                 } catch (ValidationException $e) {

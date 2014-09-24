@@ -23,7 +23,7 @@ class SessionController extends AppController
     /**
     * handle login attempt
     */
-    public function userLogin()
+    public function user_login()
     {
         
         $user = new User();

@@ -14,14 +14,14 @@ class AdminController extends AppController
     /**
     * add klub
     */
-    public function addKlub()
+    public function add_klub()
     {
         redirect_not_admin();
         $klub = new Klub();
-        $page = Param::get('page_next', 'addklub');
+        $page = Param::get('page_next', 'add_klub');
         switch ($page) {
 
-            case 'addklub':
+            case 'add_klub':
 
                 break;
 
@@ -36,7 +36,7 @@ class AdminController extends AppController
                     redirect('index');
                    
                 } catch (ValidationException $e) {
-                    $page = 'addklub';
+                    $page = 'add_klub';
                 }
                 break;
             default:
@@ -50,15 +50,15 @@ class AdminController extends AppController
     /**
     * edit klub
     */
-    public function editKlub()
+    public function edit_klub()
     {
         redirect_not_admin();
         $klub = new Klub();
         $selected_klub = Klub::getKlub(Param::get('klub_id'));
-        $page = Param::get('page_next', 'editklub');
+        $page = Param::get('page_next', 'edit_klub');
         switch ($page) {
 
-            case 'editklub':
+            case 'edit_klub':
 
                 break;
 
@@ -73,7 +73,7 @@ class AdminController extends AppController
                     flash_message('positive_message', 1);
                     redirect('index');   
                 } catch (ValidationException $e) {
-                    $page = 'editklub';
+                    $page = 'edit_klub';
                 }
                 break;
             default:
@@ -87,7 +87,7 @@ class AdminController extends AppController
     /**
     * delete klub
     */
-    public function deleteKlub()
+    public function delete_klub()
     {
         redirect_not_admin();
         $klub = new Klub();    
@@ -105,14 +105,14 @@ class AdminController extends AppController
     /**
     * add user
     */
-    public function addUser()
+    public function add_user()
     {
         redirect_not_admin();
         $user = new User();
         $mailing = new Mailing();
-        $page = Param::get('page_next', 'adduser');
+        $page = Param::get('page_next', 'add_user');
         switch ($page) {
-            case 'adduser':
+            case 'add_user':
 
                 break;
             case 'user_ok': 
@@ -127,14 +127,14 @@ class AdminController extends AppController
                 $mailing->body = "Congratulations $user->fname $user->lname !
                     <p>sign in with this $user->username and password : $user->password </p>";
                 try {
-                    $page = 'adduser';
+                    $page = 'add_user';
                     if($user->addUser()) {
                         $mailing->sendMail();
                         redirect(url(''));
                     }
                    
                 } catch (ValidationException $e) {
-                    $page = 'adduser';
+                    $page = 'add_user';
                 }
                 break;
             default:
@@ -148,7 +148,7 @@ class AdminController extends AppController
     /**
     * user list
     */
-    public function userList()
+    public function user_list()
     {
         redirect_not_admin();     
         $users = User::getUsers(ITEMS_PER_PAGE,Param::get('page_num', 1));
@@ -164,7 +164,7 @@ class AdminController extends AppController
     /**
     * delete user
     */
-    public function deleteUser()
+    public function delete_user()
     {
         redirect_not_admin();
         $user = new User();   
@@ -176,13 +176,13 @@ class AdminController extends AppController
         } else {
             flash_message('message', 'User to delete does not exist!');
         }
-        redirect('userlist');
+        redirect('user_list');
     }
 
     /**
     * members list
     */
-    public function memberList()
+    public function member_list()
     {
         redirect_not_admin();       
         $klub_id = Param::get('id');
@@ -200,7 +200,7 @@ class AdminController extends AppController
     /**
     * view a user's klubs
     */
-    public function viewUserKlubs()
+    public function view_user_klubs()
     {
         redirect_not_admin();
         $user_info = User::getUser(Param::get('id'));
@@ -212,7 +212,7 @@ class AdminController extends AppController
     /**
     * change member's level
     */
-    public function changeMemberLevel()
+    public function change_member_level()
     {
         redirect_not_admin();
         $member = new Member();
@@ -223,6 +223,6 @@ class AdminController extends AppController
         $member->changeLevel();
         flash_message('message', 'Success!');
         flash_message('positive_message', true);
-        redirect(url('admin/viewuserklubs', array("id" => $member->user_id)));
+        redirect(url('admin/view_user_klubs', array("id" => $member->user_id)));
     }
 }

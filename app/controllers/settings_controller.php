@@ -4,16 +4,16 @@ class SettingsController extends AppController
     /**
     * view/change user info
     */
-    public function userInfo()
+    public function user_info()
     {
         if(!is_logged('logged_in')) {
             redirect(url('/'));
         }
         $user = new User();
-        $page = Param::get('page_next', 'userinfo');
+        $page = Param::get('page_next', 'user_info');
         switch ($page) {
 
-            case 'userinfo':
+            case 'user_info':
                 break;
             case 'info_ok':
             
@@ -29,10 +29,10 @@ class SettingsController extends AppController
                     if ($logged_user) {
                         set_session('logged_in',$logged_user);
                     } else {
-                        $page = 'userinfo';
+                        $page = 'user_info';
                     }
                 } catch (ValidationException $e) {
-                    $page = 'userinfo';
+                    $page = 'user_info';
                 }
                 break;
             default:
@@ -47,16 +47,16 @@ class SettingsController extends AppController
     /**
     * Password change 
     */
-    public function passwordChange()
+    public function password_change()
     {
         if(!is_logged('logged_in')) {
             redirect(url('/'));
         }
         $user = new User();
-        $page = Param::get('page_next', 'passwordchange');
+        $page = Param::get('page_next', 'password_change');
         switch ($page) {
 
-            case 'passwordchange':
+            case 'password_change':
                 break;
             case 'info_ok':
                 $user->username = get_session('logged_in','username');
@@ -66,10 +66,10 @@ class SettingsController extends AppController
                 $user->id = get_session('logged_in','id');
                 try {
                     if (!$user->passwordChange()) {
-                        $page = 'passwordchange';
+                        $page = 'password_change';
                     }
                 } catch (ValidationException $e) {
-                    $page = 'passwordchange';
+                    $page = 'password_change';
                 }
 
                 break;  
