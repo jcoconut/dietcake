@@ -130,34 +130,19 @@ class User extends AppModel
         }
         $db = DB::conn();
         $db->begin();
-        if(!is_same($this->current_email, $this->email)) {
-            if($this->checkEmailExist()) {
-                $this->email_taken = true;
-            }
-        }
-        if(!is_same($this->current_username, $this->username)) {
+
+        $params = array(
+            "fname" => $this->fname,
+            "lname" => $this->lname,
+            "updated" => date('Y-m-d H:i:s')
+            );
+        $where_params = array("id" => $this->id);
+        $db->update("users",$params,$where_params);
+        $logged_user = $db->row("SELECT * FROM users
+            WHERE id = ? " , array( $this->id ));
+        $db->commit();
+        return $logged_user;
         
-            if($this->checkUsernameExist()) {
-                $this->username_taken = true;
-            }
-        }
-        if($this->email_taken ||  $this->username_taken) {
-           return false;
-        } else {
-            $params = array(
-                "fname" => $this->fname,
-                "lname" => $this->lname,
-                "email" => $this->email,
-                "username" => $this->username,
-                "updated" => date('Y-m-d H:i:s')
-                );
-            $where_params = array("id" => $this->id);
-            $db->update("user",$params,$where_params);
-            $logged_user = $db->row("SELECT * FROM user
-                WHERE id = ? " , array( $this->id ));
-            $db->commit();
-            return $logged_user;
-        }
     }
 
     /**
