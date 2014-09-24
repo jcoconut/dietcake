@@ -24,7 +24,7 @@ class Klub extends AppModel
     * get all klubs
     * @return $klubs
     */
-    public function getKlubs()
+    public static function getKlubs()
     {  
         $db = DB::conn();
         $except = REQUESTED;
@@ -39,10 +39,10 @@ class Klub extends AppModel
     * get klub
     * @return $klub
     */
-    public function getKlub()
+    public static function getKlub($klub_id)
     {  
         $db = DB::conn();
-        $klub = $db->row("SELECT * from klub WHERE klub_id = ?", array($this->klub_id));  
+        $klub = $db->row("SELECT * from klub WHERE klub_id = ?", array($klub_id));  
         return $klub;    
     }
 
@@ -60,22 +60,18 @@ class Klub extends AppModel
         if($this->checkKlubExist()) {
             $this->klub_taken = true;
         }
-        
         if($this->klub_taken) {
-            throw new ValidationException();
-            return false;
-        } else {     
-            $params = array(
-                "klub_name" => $this->klub_name,
-                "klub_details" => $this->klub_details,
-                "klub_updated" => date('Y-m-d H:i:s')
-            );
-            $db->insert("klub", $params);
-            $this->id = $db->lastInsertId();
-            $db->commit();
-            return true;
-        } 
-        
+            throw new ValidationException(); 
+        }   
+        $params = array(
+            "klub_name" => $this->klub_name,
+            "klub_details" => $this->klub_details,
+            "klub_updated" => date('Y-m-d H:i:s')
+        );
+        $db->insert("klub", $params);
+        $this->id = $db->lastInsertId();
+        $db->commit();
+        return true;      
     }
 
     /**
@@ -101,13 +97,11 @@ class Klub extends AppModel
         }
         $db = DB::conn();
         $db->begin();
-        if(!is_same($this->current_name, $this->klub_name) and $this->checkKlubExist()) {
+        if(!is_same($this->current_name, $this->klub_name) && $this->checkKlubExist()) {
             $this->klub_taken = true;
-        }
-        if($this->klub_taken) {
             throw new ValidationException();
-            return false;
-        } else {
+        }
+      
             $params = array(
                 "klub_name" => $this->klub_name,
                 "klub_details" => $this->klub_details,
@@ -117,7 +111,7 @@ class Klub extends AppModel
             $db->update("klub",$params,$where_params);
             $db->commit();
             return true;
-        }
+        
     }
 
     /**
@@ -128,7 +122,6 @@ class Klub extends AppModel
     {
         $db = DB::conn();
         $db->query("DELETE FROM klub WHERE klub_id = ?", array($this->klub_id));
-        $deleted = $db->rowCount();
-        return $deleted;
+        return $db->rowCount();
     }
 }

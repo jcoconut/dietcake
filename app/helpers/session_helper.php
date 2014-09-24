@@ -17,6 +17,12 @@ function get_session($sess_name , $sess_var)
     
 }
 
+function redirect_not_admin(){
+    if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL) {
+        redirect(url('/'));
+    }
+}
+
 function flash_message($name = '', $message = '', $class = 'alert', $tag = 'p')
 {
     if( !empty( $name ) ) {

@@ -215,9 +215,10 @@ class User extends AppModel
     * get all users
     * @return $users
     */
-    public function getUsers($records_per_page){
+    public static function getUsers($records_per_page, $page_num)
+    {
         $db = DB::conn();
-        $start = ($this->page_num - 1) * $records_per_page ;
+        $start = ($page_num - 1) * $records_per_page ;
         $users = $db->rows("SELECT * FROM user ORDER BY created
             DESC LIMIT $start,$records_per_page");
         return $users;
@@ -227,9 +228,10 @@ class User extends AppModel
     * get one user
     * @return $user
     */
-    public function getUser(){
+    public static function getUser($user_id)
+    {
         $db = DB::conn();
-        $user = $db->row("SELECT fname,lname FROM user WHERE id = ?", array($this->user_id));
+        $user = $db->row("SELECT fname,lname FROM user WHERE id = ?", array($user_id));
         return $user;
     }
 

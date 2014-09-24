@@ -54,7 +54,7 @@ class ThreadController extends AppController
                 $comment->body = Param::get('body');
                 try {
                     if ( $thread->create($comment) ) {
-                        redirect(url('thread/viewthread?id='.$thread->id));
+                        redirect(url('thread/viewthread', array('id' => $thread->id)));
                     } else {
                         $page = 'create';
                     }
@@ -109,7 +109,7 @@ class ThreadController extends AppController
             case 'write':
                 break;
             case 'write_end':   
-                redirect(url('thread/viewthread?id='.$comment->thread_id));
+                redirect(url('thread/viewthread', array('id' => $comment->thread_id)));
                 try {
                     $comment->write($comment->thread_id);
                 } catch (ValidationException $e) {

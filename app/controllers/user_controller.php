@@ -12,7 +12,7 @@ class UserController extends AppController
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
-        $klubs = $member->getUserBoth();
+        $klubs = $member->getUserBoth(get_session('logged_in','id'));
         if(count($member->klubs) > 0) {
             $requests = $member->getKlubRequests();
         }
@@ -67,17 +67,14 @@ class UserController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
-        $klub = new Klub();
-        $member = new Member();
-        $member->page_num = Param::get('page_num', 1);        
-        $member->klub_id = $klub->klub_id = Param::get('id');
-        $selected_klub = $klub->getKlub();
-        $members = $member->getKlubMembers(ITEMS_PER_PAGE);
-        
+        $klub_id = Param::get('id');
+        $selected_klub = Klub::getKlub($klub_id);
+        $members = Member::getKlubMembers(ITEMS_PER_PAGE, $klub_id, Param::get('page_num', 1));
+
         $page = new Pagination();
-        $page->total_rows = $member->countMembers();
+        $page->total_rows = Member::countMembers(Param::get('id'));
         $page->per_page = ITEMS_PER_PAGE;
-        $page->extra_query = array("id=$member->klub_id");
+        $page->extra_query = array("id=$klub_id");
         $paginate = $page->pageIt();
         $this->set(get_defined_vars());
     }
@@ -90,12 +87,8 @@ class UserController extends AppController
         if(!is_logged('logged_in') || get_session('logged_in','type')==ADMIN) {
             redirect(url('/'));
         }
-        $user = new User();
-        $member = new Member();
-        $user->user_id = Param::get('id');
-        $member->user_id = Param::get('id');
-        $user_info = $user->getUser();
-        $klubs = $member->getUserBoth();
+        $user_info = User::getUser(Param::get('id'));
+        $klubs = Member::getUserBoth(Param::get('id'));
         $this->set(get_defined_vars());
     }
     

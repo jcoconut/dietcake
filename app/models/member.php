@@ -23,7 +23,7 @@ class Member extends AppModel
     */
     public function getUserRequests()
     {
-        $requests = "";
+        $requests = array();
         $db = DB::conn();
         $rows = $db->rows("SELECT * from member
             WHERE user_id = ? AND level = ?", array($this->user_id,REQUESTED));
@@ -86,11 +86,11 @@ class Member extends AppModel
     * count members of a klub
     * @return $count
     */
-    public function countMembers()
+    public static function countMembers($klub_id)
     {
         $db = DB::conn();
         $count = $db->row("SELECT COUNT(*) as count FROM member
-            WHERE klub_id = ?", array($this->klub_id));
+            WHERE klub_id = ?", array($klub_id));
         return $count['count'];
     }
 
@@ -99,15 +99,15 @@ class Member extends AppModel
     * @param $records_per_page
     * @return $members
     */
-    public function getKlubMembers($records_per_page)
+    public static function getKlubMembers($records_per_page, $klub_id, $page_num)
     {
         $db = DB::conn();
-        $start = ($this->page_num - 1) * $records_per_page ;
+        $start = ($page_num - 1) * $records_per_page ;
         $members = $db->rows("SELECT * from member
             LEFT JOIN user ON member.user_id=user.id
             WHERE klub_id = ? AND level != ?
             ORDER BY member.updated DESC
-            LIMIT $start,$records_per_page", array($this->klub_id,REQUESTED));
+            LIMIT $start,$records_per_page", array($klub_id,REQUESTED));
         return $members;
     }
 
@@ -115,12 +115,12 @@ class Member extends AppModel
     * get member leader/member
     * @return $klubs
     */
-    public function getUserBoth()
+    public static function getUserBoth($user_id)
     {
         $db = DB::conn();
         $klubs = $db->rows("SELECT * from member
             LEFT JOIN klub ON member.klub_id=klub.klub_id
-            WHERE user_id = ?", array($this->user_id));
+            WHERE user_id = ?", array($user_id));
         return $klubs;
     }
 

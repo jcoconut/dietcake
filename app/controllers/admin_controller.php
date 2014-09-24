@@ -6,10 +6,7 @@ class AdminController extends AppController
     */
     public function index()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
-        $klub = new Klub();
+        redirect_not_admin();
         $klubs = Klub::getKlubs();
         $this->set(get_defined_vars());    
     }
@@ -19,9 +16,7 @@ class AdminController extends AppController
     */
     public function addKlub()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
+        redirect_not_admin();
         $klub = new Klub();
         $page = Param::get('page_next', 'addklub');
         switch ($page) {
@@ -57,12 +52,9 @@ class AdminController extends AppController
     */
     public function editKlub()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
+        redirect_not_admin();
         $klub = new Klub();
-        $klub->klub_id = Param::get('klub_id');
-        $selected_klub = $klub->getKlub();
+        $selected_klub = Klub::getKlub(Param::get('klub_id'));
         $page = Param::get('page_next', 'editklub');
         switch ($page) {
 
@@ -71,6 +63,7 @@ class AdminController extends AppController
                 break;
 
             case 'klub_ok': 
+                $klub->klub_id = Param::get('klub_id');
                 $klub->klub_name = Param::get('klub_name');
                 $klub->klub_details = Param::get('klub_details');
                 $klub->current_name = $selected_klub['klub_name'];
@@ -96,9 +89,7 @@ class AdminController extends AppController
     */
     public function deleteKlub()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
+        redirect_not_admin();
         $klub = new Klub();    
         $klub->klub_id = Param::get('klub_id');
         $deleted = $klub->deleteKlub();
@@ -116,9 +107,7 @@ class AdminController extends AppController
     */
     public function addUser()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
+        redirect_not_admin();
         $user = new User();
         $mailing = new Mailing();
         $page = Param::get('page_next', 'adduser');
@@ -138,10 +127,8 @@ class AdminController extends AppController
                 $mailing->body = "Congratulations $user->fname $user->lname !
                     <p>sign in with this $user->username and password : $user->password </p>";
                 try {
-                    if(!$user->addUser()) {
-                        $page = 'adduser';
-                    } else {
-                        $page = 'adduser';
+                    $page = 'adduser';
+                    if($user->addUser()) {
                         $mailing->sendMail();
                         redirect(url(''));
                     }
@@ -163,13 +150,8 @@ class AdminController extends AppController
     */
     public function userList()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }  
-
-        $user = new User();
-        $user->page_num = Param::get('page_num', 1);    
-        $users = $user->getUsers(ITEMS_PER_PAGE);
+        redirect_not_admin();     
+        $users = User::getUsers(ITEMS_PER_PAGE,Param::get('page_num', 1));
 
         $page = new Pagination();
         $page->total_rows = User::countUsers();
@@ -184,9 +166,7 @@ class AdminController extends AppController
     */
     public function deleteUser()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
+        redirect_not_admin();
         $user = new User();   
         $user->id = Param::get('id');
         $deleted = $user->deleteUser();
@@ -204,20 +184,15 @@ class AdminController extends AppController
     */
     public function memberList()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
-        $klub = new Klub();
-        $member = new Member();
-        $member->page_num = Param::get('page_num', 1);        
-        $member->klub_id = $klub->klub_id = Param::get('id');
-        $selected_klub = $klub->getKlub();
-        $members = $member->getKlubMembers(ITEMS_PER_PAGE);
+        redirect_not_admin();       
+        $klub_id = Param::get('id');
+        $selected_klub = Klub::getKlub($klub_id);
+        $members = Member::getKlubMembers(ITEMS_PER_PAGE, $klub_id, Param::get('page_num', 1));
 
         $page = new Pagination();
-        $page->total_rows = $member->countMembers();
+        $page->total_rows = Member::countMembers(Param::get('id'));
         $page->per_page = ITEMS_PER_PAGE;
-        $page->extra_query = array("id=$member->klub_id");
+        $page->extra_query = array("id=$klub_id");
         $paginate = $page->pageIt();
         $this->set(get_defined_vars());
     }
@@ -227,15 +202,9 @@ class AdminController extends AppController
     */
     public function viewUserKlubs()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
-        $user = new User();
-        $member = new Member();
-        $user->user_id = Param::get('id');
-        $member->user_id = Param::get('id');
-        $user_info = $user->getUser();
-        $klubs = $member->getUserBoth();
+        redirect_not_admin();
+        $user_info = User::getUser(Param::get('id'));
+        $klubs = Member::getUserBoth(Param::get('id'));
         $this->set(get_defined_vars());
        
     }
@@ -245,9 +214,7 @@ class AdminController extends AppController
     */
     public function changeMemberLevel()
     {
-        if(!is_logged('logged_in') || get_session('logged_in','type')==NORMAL){
-            redirect(url('/'));
-        }
+        redirect_not_admin();
         $member = new Member();
         $member->id = Param::get('member_id');
         $member->user_id = Param::get('user_id');

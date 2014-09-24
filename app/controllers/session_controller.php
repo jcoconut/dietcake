@@ -7,10 +7,16 @@ class SessionController extends AppController
     */
     public function index()
     {
-        if(is_logged('logged_in') && get_session('logged_in','type')==NORMAL) {
-            redirect(url('user/index'));
-        } elseif (is_logged('logged_in') && get_session('logged_in','type')==ADMIN) {
-            redirect(url('admin/index'));
+        if (is_logged('logged_in')) {
+            $type = get_session('logged_in','type');
+            switch ($type) {
+                case NORMAL:
+                    redirect(url('user/index'));
+                    break;
+                case ADMIN:
+                    redirect(url('admin/index'));
+                    break;
+            }
         }
     }
 
@@ -24,17 +30,21 @@ class SessionController extends AppController
         $user->username = Param::get('username');
         $user->password = Param::get('password');
         $logged_user = $user->validateLogin();
-        
-        if ($logged_user['type'] == NORMAL) {
-            set_session('logged_in',$logged_user);
-            redirect(url('user/index'));
-        } elseif($logged_user['type'] == ADMIN) {
-            set_session('logged_in',$logged_user);
-            redirect(url('admin/index'));
-        } else {
-            flash_message('login_failed', 'Login credentials invalid!' ); 
-            redirect(url('/'));
-        }   
+        $type = $logged_user['type']; 
+        switch ($type) {
+            case NORMAL:
+                set_session('logged_in',$logged_user);
+                redirect(url('user/index'));
+                break;
+            case ADMIN:
+                set_session('logged_in',$logged_user);
+                redirect(url('admin/index'));
+                break;
+            default:
+                flash_message('login_failed', 'Login credentials invalid!' ); 
+                redirect(url('/'));
+                break;
+        }
     }
 
     /**
