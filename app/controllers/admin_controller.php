@@ -54,7 +54,7 @@ class AdminController extends AppController
     {
         redirect_not_admin();
         $klub = new Klub();
-        $selected_klub = Klub::getKlub(Param::get('klub_id'));
+        $selected_klub = Klub::get(Param::get('klub_id'));
         $page = Param::get('page_next', 'edit_klub');
         switch ($page) {
 
@@ -66,7 +66,7 @@ class AdminController extends AppController
                 $klub->klub_id = Param::get('klub_id');
                 $klub->klub_name = Param::get('klub_name');
                 $klub->klub_details = Param::get('klub_details');
-                $klub->current_name = $selected_klub['klub_name'];
+                $klub->current_name = $selected_klub->klub_name;
                 try {
                     $klub->editKlub();
                     flash_message('message', 'Klub has been Edited!');
@@ -90,8 +90,7 @@ class AdminController extends AppController
     public function delete_klub()
     {
         redirect_not_admin();
-        $klub = new Klub();    
-        $klub->klub_id = Param::get('klub_id');
+        $klub = Klub::get(Param::get('klub_id'));
         $deleted = $klub->deleteKlub();
         if($deleted){
             flash_message('message', 'Klub has been deleted!');
@@ -186,7 +185,7 @@ class AdminController extends AppController
     {
         redirect_not_admin();       
         $klub_id = Param::get('id');
-        $selected_klub = Klub::getKlub($klub_id);
+        $selected_klub = Klub::get($klub_id);
         $members = Member::getKlubMembers(ITEMS_PER_PAGE, $klub_id, Param::get('page_num', 1));
 
         $page = new Pagination();
@@ -206,7 +205,6 @@ class AdminController extends AppController
         $user_info = User::getUser(Param::get('id'));
         $klubs = Member::getUserBoth(Param::get('id'));
         $this->set(get_defined_vars());
-       
     }
 
     /**

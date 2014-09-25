@@ -39,11 +39,11 @@ class Klub extends AppModel
     * get klub
     * @return $klub
     */
-    public static function getKlub($klub_id)
+    public static function get($klub_id)
     {  
         $db = DB::conn();
-        $klub = $db->row("SELECT * from klub WHERE klub_id = ?", array($klub_id));  
-        return $klub;    
+        $row = $db->row("SELECT * from klub WHERE klub_id = ?", array($klub_id));  
+        return new self($row);    
     }
 
     /**
