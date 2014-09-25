@@ -101,17 +101,15 @@ class Klub extends AppModel
             $this->klub_taken = true;
             throw new ValidationException();
         }
-      
             $params = array(
                 "klub_name" => $this->klub_name,
                 "klub_details" => $this->klub_details,
                 "klub_updated" => date('Y-m-d H:i:s'),
-                );
+            );
             $where_params = array("klub_id" => $this->klub_id);
             $db->update("klub",$params,$where_params);
             $db->commit();
             return true;
-        
     }
 
     /**

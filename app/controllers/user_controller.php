@@ -11,7 +11,7 @@ class UserController extends AppController
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
         $klubs = $member->getBoth(get_session('logged_in','id'));
-        if(count($member->klubs) > 0) {
+        if(count($member->klubs)) {
             $requests = $member->getKlubRequests();
         }
         $this->set(get_defined_vars());    
@@ -23,8 +23,7 @@ class UserController extends AppController
     public function klubs()
     {
         redirect_if_admin();
-        $klub = new Klub();
-        $klubs = $klub->getAll();
+        $klubs = Klub::getAll();
 
         $member = new Member();
         $member->user_id = get_session('logged_in', 'id');
