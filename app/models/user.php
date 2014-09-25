@@ -219,8 +219,12 @@ class User extends AppModel
     {
         $db = DB::conn();
         $start = ($page_num - 1) * $records_per_page ;
-        $users = $db->rows("SELECT * FROM user ORDER BY created
+        $rows = $db->rows("SELECT * FROM user ORDER BY created
             DESC LIMIT $start,$records_per_page");
+        $users = array();
+        foreach ($rows as $row) {
+            $users[] = new self($row);
+        }
         return $users;
     }
     
@@ -232,7 +236,7 @@ class User extends AppModel
     {
         $db = DB::conn();
         $user = $db->row("SELECT fname,lname FROM user WHERE id = ?", array($user_id));
-        return $user;
+        return new self($user);
     }
 
     /**
@@ -243,8 +247,7 @@ class User extends AppModel
     {  
         $db = DB::conn();
         $db->query("DELETE FROM user WHERE id = ?", array($this->id));
-        $deleted = $db->rowCount();
-        return $deleted;
+        return $db->rowCount();
     }
 
 }
