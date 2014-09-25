@@ -107,7 +107,7 @@ class Klub extends AppModel
                 "klub_updated" => date('Y-m-d H:i:s'),
             );
             $where_params = array("klub_id" => $this->klub_id);
-            $db->update("klub",$params,$where_params);
+            $db->update("klub", $params, $where_params);
             $db->commit();
             return true;
     }
