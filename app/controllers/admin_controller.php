@@ -7,7 +7,7 @@ class AdminController extends AppController
     public function index()
     {
         redirect_not_admin();
-        $klubs = Klub::getKlubs();
+        $klubs = Klub::getAll();
         $this->set(get_defined_vars());    
     }
 
@@ -30,7 +30,7 @@ class AdminController extends AppController
                 $klub->klub_details = Param::get('klub_details');
                 try {
     
-                    $klub->addKlub();
+                    $klub->add();
                     flash_message('message', 'Klub has been Added!');
                     flash_message('positive_message', true);
                     redirect('index');
@@ -68,7 +68,7 @@ class AdminController extends AppController
                 $klub->klub_details = Param::get('klub_details');
                 $klub->current_name = $selected_klub->klub_name;
                 try {
-                    $klub->editKlub();
+                    $klub->edit();
                     flash_message('message', 'Klub has been Edited!');
                     flash_message('positive_message', 1);
                     redirect('index');   
@@ -91,7 +91,7 @@ class AdminController extends AppController
     {
         redirect_not_admin();
         $klub = Klub::get(Param::get('klub_id'));
-        $deleted = $klub->deleteKlub();
+        $deleted = $klub->delete();
         if($deleted){
             flash_message('message', 'Klub has been deleted!');
             flash_message('positive_message', 1);
@@ -127,7 +127,7 @@ class AdminController extends AppController
                     <p>sign in with this $user->username and password : $user->password </p>";
                 try {
                     $page = 'add_user';
-                    if($user->addUser()) {
+                    if($user->add()) {
                         $mailing->sendMail();
                         redirect(url(''));
                     }
@@ -150,10 +150,10 @@ class AdminController extends AppController
     public function user_list()
     {
         redirect_not_admin();     
-        $users = User::getUsers(ITEMS_PER_PAGE,Param::get('page_num', 1));
+        $users = User::getAll(ITEMS_PER_PAGE,Param::get('page_num', 1));
 
         $page = new Pagination();
-        $page->total_rows = User::countUsers();
+        $page->total_rows = User::count();
         $page->per_page = ITEMS_PER_PAGE;
         $paginate = $page->pageIt();
 
@@ -168,7 +168,7 @@ class AdminController extends AppController
         redirect_not_admin();
         $user = new User();   
         $user->id = Param::get('id');
-        $deleted = $user->deleteUser();
+        $deleted = $user->delete();
         if($deleted) {
             flash_message('message', 'User has been deleted!');
             flash_message('positive_message', true);
@@ -202,8 +202,8 @@ class AdminController extends AppController
     public function view_user_klubs()
     {
         redirect_not_admin();
-        $user_info = User::getUser(Param::get('id'));
-        $klubs = Member::getUserBoth(Param::get('id'));
+        $user_info = User::get(Param::get('id'));
+        $klubs = Member::getBoth(Param::get('id'));
         $this->set(get_defined_vars());
     }
 

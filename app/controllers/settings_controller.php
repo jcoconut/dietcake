@@ -25,7 +25,7 @@ class SettingsController extends AppController
                 $user->current_username = get_session('logged_in', 'username');
                 $user->current_email = get_session('logged_in', 'email');
                 try {
-                    $logged_user = $user->updateUser();
+                    $logged_user = $user->update();
                     if ($logged_user) {
                         set_session('logged_in',$logged_user);
                     } else {

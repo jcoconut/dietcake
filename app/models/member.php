@@ -115,7 +115,7 @@ class Member extends AppModel
     * get member leader/member
     * @return $klubs
     */
-    public static function getUserBoth($user_id)
+    public static function getBoth($user_id)
     {
         $db = DB::conn();
         $klubs = $db->rows("SELECT * from member

@@ -10,7 +10,7 @@ class UserController extends AppController
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
         $member->klubs = $member->getUserLeaderships();
-        $klubs = $member->getUserBoth(get_session('logged_in','id'));
+        $klubs = $member->getBoth(get_session('logged_in','id'));
         if(count($member->klubs) > 0) {
             $requests = $member->getKlubRequests();
         }
@@ -24,7 +24,7 @@ class UserController extends AppController
     {
         redirect_if_admin();
         $klub = new Klub();
-        $klubs = $klub->getKlubs();
+        $klubs = $klub->getAll();
 
         $member = new Member();
         $member->user_id = get_session('logged_in', 'id');
@@ -60,7 +60,7 @@ class UserController extends AppController
     {
         redirect_if_admin();
         $klub_id = Param::get('id');
-        $selected_klub = Klub::getKlub($klub_id);
+        $selected_klub = Klub::get($klub_id);
         $members = Member::getKlubMembers(ITEMS_PER_PAGE, $klub_id, Param::get('page_num', 1));
 
         $page = new Pagination();
@@ -77,8 +77,8 @@ class UserController extends AppController
     public function view_user_klubs()
     {
         redirect_if_admin();
-        $user_info = User::getUser(Param::get('id'));
-        $klubs = Member::getUserBoth(Param::get('id'));
+        $user_info = User::get(Param::get('id'));
+        $klubs = Member::getBoth(Param::get('id'));
         $this->set(get_defined_vars());
     }
     

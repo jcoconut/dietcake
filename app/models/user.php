@@ -63,7 +63,7 @@ class User extends AppModel
     * insert user
     * @return boolean
     */
-    public function addUser()
+    public function add()
     {
          
         if (!$this->validate()) {
@@ -122,7 +122,7 @@ class User extends AppModel
     /**
     * update user info
     */
-    public function updateUser()
+    public function update()
     {
         $this->validate();
         if ($this->hasError()) {
@@ -205,7 +205,7 @@ class User extends AppModel
     * count all users
     * @return int
     */
-    public static function countUsers()
+    public static function count()
     {
         $db = DB::conn();
         return (int) $db->value("SELECT COUNT(*) FROM user");
@@ -215,7 +215,7 @@ class User extends AppModel
     * get all users
     * @return $users
     */
-    public static function getUsers($records_per_page, $page_num)
+    public static function getAll($records_per_page, $page_num)
     {
         $db = DB::conn();
         $start = ($page_num - 1) * $records_per_page ;
@@ -228,7 +228,7 @@ class User extends AppModel
     * get one user
     * @return $user
     */
-    public static function getUser($user_id)
+    public static function get($user_id)
     {
         $db = DB::conn();
         $user = $db->row("SELECT fname,lname FROM user WHERE id = ?", array($user_id));
@@ -239,7 +239,7 @@ class User extends AppModel
     * delete user
     * @return $deleted
     */
-    public function deleteUser ()
+    public function delete()
     {  
         $db = DB::conn();
         $db->query("DELETE FROM user WHERE id = ?", array($this->id));

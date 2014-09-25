@@ -24,7 +24,7 @@ class Klub extends AppModel
     * get all klubs
     * @return $klubs
     */
-    public static function getKlubs()
+    public static function getAll()
     {  
         $db = DB::conn();
         $except = REQUESTED;
@@ -50,7 +50,7 @@ class Klub extends AppModel
     * insert klub
     * @return boolean
     */
-    public function addKlub()
+    public function add()
     {  
         if (!$this->validate()) {
             throw new ValidationException();
@@ -89,7 +89,7 @@ class Klub extends AppModel
     /**
     * update klub info
     */
-    public function editKlub()
+    public function edit()
     {
         $this->validate();
         if ($this->hasError()) {
@@ -118,7 +118,7 @@ class Klub extends AppModel
     * delete klub
     * @return $deleted
     */
-    public function deleteKlub ()
+    public function delete()
     {
         $db = DB::conn();
         $db->query("DELETE FROM klub WHERE klub_id = ?", array($this->klub_id));
