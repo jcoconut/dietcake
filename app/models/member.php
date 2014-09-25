@@ -174,6 +174,6 @@ class Member extends AppModel
             $params['updated'] = date('Y-m-d H:i:s');
         }
         $where_params = array("id" => $this->id);
-        $db->update("member", $params,$where_params);    
+        $db->update("member", $params, $where_params);    
     }  
 }
