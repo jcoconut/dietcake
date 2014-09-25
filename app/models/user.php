@@ -4,11 +4,11 @@ class User extends AppModel
     const MIN_CHAR = 1;
     const MAX_CHAR = 30;
     
-    public $password_match = true;
-    public $password_correct = true;
-    public $already_registered = false;
-    public $email_taken = false;
-    public $username_taken = false;
+    public $is_password_match = true;
+    public $is_password_match = true;
+    public $is_already_registered = false;
+    public $is_email_taken = false;
+    public $is_username_taken = false;
 
     public $validation = array(
         'fname' => array(
@@ -72,12 +72,12 @@ class User extends AppModel
         $db = DB::conn();
         $db->begin();         
         if($this->checkEmailExist()) {
-            $this->email_taken = true;
+            $this->is_email_taken = true;
         }
         if($this->checkUsernameExist()) {
-            $this->username_taken = true;
+            $this->is_username_taken = true;
         }
-        if($this->email_taken || $this->username_taken) {
+        if($this->is_email_taken || $this->is_username_taken) {
             return false;
         } else {     
             $params = array(
@@ -132,16 +132,16 @@ class User extends AppModel
         $db->begin();
         if(!is_same($this->current_email, $this->email)) {
             if($this->checkEmailExist()) {
-                $this->email_taken = true;
+                $this->is_email_taken = true;
             }
         }
         if(!is_same($this->current_username, $this->username)) {
         
             if($this->checkUsernameExist()) {
-                $this->username_taken = true;
+                $this->is_username_taken = true;
             }
         }
-        if($this->email_taken ||  $this->username_taken) {
+        if($this->is_email_taken ||  $this->is_username_taken) {
            return false;
         } else {
             $params = array(
@@ -165,8 +165,8 @@ class User extends AppModel
     */
     public function passwordChange()
     {
-        $this->password_match = is_same($this->new_password,$this->confirm_password);
-        if (!$this->validate() || ($this->password_match==false)) {
+        $this->is_password_match = is_same($this->new_password,$this->confirm_password);
+        if (!$this->validate() || ($this->is_password_match==false)) {
             throw new ValidationException('invalid');
         }
         $db = DB::conn();
@@ -181,7 +181,7 @@ class User extends AppModel
             $db->commit();
             return true;
         } else {
-            $this->password_correct = false;
+            $this->is_password_match = false;
         }
     }
 
