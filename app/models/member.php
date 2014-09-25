@@ -26,12 +26,12 @@ class Member extends AppModel
     */
     public function getUserRequests()
     {
-        $requests = array();
         $db = DB::conn();
         $rows = $db->rows("SELECT * from member
             WHERE user_id = ? AND level = ?", array($this->user_id,self::REQUESTED));
-        foreach($rows as $request){
-            $requests[] = $request['klub_id'];
+        $requests = array();
+        foreach ($rows as $row) {
+            $requests[] = new self($row);
         }
         return $requests;
     }
@@ -92,9 +92,7 @@ class Member extends AppModel
     public static function countMembers($klub_id)
     {
         $db = DB::conn();
-        $count = $db->row("SELECT COUNT(*) as count FROM member
-            WHERE klub_id = ?", array($klub_id));
-        return $count['count'];
+        return (int) $db->value('SELECT COUNT(*) FROM member WHERE klub_id = ?', array($klub_id));
     }
 
     /**
@@ -106,11 +104,15 @@ class Member extends AppModel
     {
         $db = DB::conn();
         $start = ($page_num - 1) * $records_per_page ;
-        $members = $db->rows("SELECT * from member
+        $rows = $db->rows("SELECT * from member
             LEFT JOIN user ON member.user_id=user.id
             WHERE klub_id = ? AND level != ?
             ORDER BY member.updated DESC
             LIMIT $start,$records_per_page", array($klub_id,self::REQUESTED));
+        $members = array();
+        foreach ($rows as $row) {
+            $members[] = new self($row);
+        }
         return $members;
     }
 
@@ -131,7 +133,7 @@ class Member extends AppModel
     * get user klubs id array
     * @return $klub_ids
     */
-    public function getUserKlubs()
+    public function getUserKlubIds()
     {
         $klub_ids = array();
         $db = DB::conn();
@@ -156,7 +158,7 @@ class Member extends AppModel
         $where_params = array(
             "id" => $this->id
             );
-        $db->update("member",$params,$where_params);
+        $db->update("member", $params, $where_params);
         return true;     
     }
 
@@ -164,19 +166,17 @@ class Member extends AppModel
     * change member level
     */
     public function changeLevel()
-    {
+    {      
         $db = DB::conn();
-        if($this->updated) {
+        $params = array('level' => $this->level);
+        if ($this->updated) {
             $params = array(
-                "level" => $this->level,
-                "updated" => date('Y-m-d H:i:s')
+                'level' => $this->level,
+                'updated' => date('Y-m-d H:i:s')
             );
-        } else {
-            $params = array("level" => $this->level);
-            
         }
         $where_params = array("id" => $this->id);
-        $db->update("member",$params,$where_params);    
+        $db->update("member", $params,$where_params);    
     }  
 
 }

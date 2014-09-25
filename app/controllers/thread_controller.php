@@ -9,7 +9,7 @@ class ThreadController extends AppController
         redirect_if_admin();
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
-        $klubs = $member->getUserKlubs();
+        $klubs = $member->getUserKlubIds();
         $thread = new Thread();
         $thread->page_num = Param::get('page_num', 1);        
         $threads = $thread->getAll(ITEMS_PER_PAGE);
