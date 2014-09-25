@@ -143,21 +143,21 @@ class User extends AppModel
         }
         if($this->is_email_taken ||  $this->is_username_taken) {
            return false;
-        } else {
-            $params = array(
-                "fname" => $this->fname,
-                "lname" => $this->lname,
-                "email" => $this->email,
-                "username" => $this->username,
-                "updated" => date('Y-m-d H:i:s')
-                );
-            $where_params = array("id" => $this->id);
-            $db->update("user",$params,$where_params);
-            $logged_user = $db->row("SELECT * FROM user
-                WHERE id = ? " , array( $this->id ));
-            $db->commit();
-            return $logged_user;
         }
+        $params = array(
+            "fname" => $this->fname,
+            "lname" => $this->lname,
+            "email" => $this->email,
+            "username" => $this->username,
+            "updated" => date('Y-m-d H:i:s')
+            );
+        $where_params = array("id" => $this->id);
+        $db->update("user",$params,$where_params);
+        $logged_user = $db->row("SELECT * FROM user
+            WHERE id = ? " , array( $this->id ));
+        $db->commit();
+        return $logged_user;
+        
     }
 
     /**
@@ -194,7 +194,7 @@ class User extends AppModel
         $db = DB::conn();
         $loguser = $db->row('SELECT * FROM user
             WHERE username = ? AND password = ?' ,
-            array($this->username,md5(sha1($this->password))));
+            array($this->username, md5(sha1($this->password))));
         if($loguser) {
             return $loguser;    
         }

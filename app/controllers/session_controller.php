@@ -11,11 +11,9 @@ class SessionController extends AppController
             $type = get_session('logged_in','type');
             switch ($type) {
                 case NORMAL:
-                    redirect(url('user/index'));
-                    break;
+                    redirect(url('user/index')); 
                 case ADMIN:
-                    redirect(url('admin/index'));
-                    break;
+                    redirect(url('admin/index'));  
             }
         }
     }
@@ -35,22 +33,19 @@ class SessionController extends AppController
             case NORMAL:
                 set_session('logged_in',$logged_user);
                 redirect(url('user/index'));
-                break;
             case ADMIN:
                 set_session('logged_in',$logged_user);
                 redirect(url('admin/index'));
-                break;
             default:
                 flash_message('login_failed', 'Login credentials invalid!' ); 
                 redirect(url('/'));
-                break;
         }
     }
 
     /**
     * logout,remove/destroy session
     */
-    public function logOut()
+    public function log_out()
     {
         session_destroy();
         redirect(url('/'));

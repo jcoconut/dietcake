@@ -78,10 +78,14 @@ class Thread extends AppModel
         $select_statements = "thread.id,title,thread.created,privacy,klub_id,username,
             $comment_counts AS comment_count, $last_posted AS last_posted, $time_last_posted as when_last";
 
-        $thread_rows = $db->rows("SELECT $select_statements FROM thread
+        $rows = $db->rows("SELECT $select_statements FROM thread
             LEFT JOIN user ON thread.user_id=user.id ORDER BY when_last
             DESC LIMIT $start,$records_per_page");
-        return $thread_rows;
+        $threads = array();
+        foreach ($rows as $row) {
+            $threads[] = new self($row);
+        }
+        return $threads;
     }
 
     /**
@@ -96,7 +100,7 @@ class Thread extends AppModel
         $thread_row = $db->row("SELECT $select_statements FROM thread
             LEFT JOIN user ON thread.user_id=user.id
             WHERE thread.id = ?" , array($id));
-        return $thread_row;
+        return new self($thread_row);
     }
 
     /**
