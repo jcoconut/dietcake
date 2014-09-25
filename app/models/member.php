@@ -171,7 +171,7 @@ class Member extends AppModel
         $db = DB::conn();
         $params = array('level' => $this->level);
         if ($this->updated) {
-            $params['updated'] = date('Y-m-d H:i:s')
+            $params['updated'] = date('Y-m-d H:i:s');
         }
         $where_params = array("id" => $this->id);
         $db->update("member", $params,$where_params);    
