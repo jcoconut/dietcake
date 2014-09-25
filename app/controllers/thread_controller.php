@@ -36,7 +36,7 @@ class ThreadController extends AppController
         $comment = new Comment;
         $member = new Member();
         $member->user_id = get_session('logged_in','id');
-        $klubs = $member->getUserBoth($member->user_id);
+        $klubs = $member->getBoth($member->user_id);
         $page = Param::get('page_next', 'create');
         switch ($page)
         {

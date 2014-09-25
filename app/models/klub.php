@@ -27,7 +27,7 @@ class Klub extends AppModel
     public static function getAll()
     {  
         $db = DB::conn();
-        $except = REQUESTED;
+        $except = Member::REQUESTED;
         $member_count = "(SELECT COUNT(id) FROM member
             WHERE klub.klub_id = member.klub_id
             AND member.level != $except)";

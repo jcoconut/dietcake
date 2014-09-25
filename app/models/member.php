@@ -1,6 +1,9 @@
 <?php
 class Member extends AppModel
 {
+    const REQUESTED = 0;
+    const MEMBER = 1;
+    const LEADER = 2;
     /**
     * add member as level 0
     * @return true
@@ -11,7 +14,7 @@ class Member extends AppModel
         $params = array(
             "klub_id" => $this->klub_id,
             "user_id" => $this->user_id,
-            "level" => REQUESTED,
+            "level" => self::REQUESTED,
         );
         $db->insert("member", $params);
         return true;
@@ -26,7 +29,7 @@ class Member extends AppModel
         $requests = array();
         $db = DB::conn();
         $rows = $db->rows("SELECT * from member
-            WHERE user_id = ? AND level = ?", array($this->user_id,REQUESTED));
+            WHERE user_id = ? AND level = ?", array($this->user_id,self::REQUESTED));
         foreach($rows as $request){
             $requests[] = $request['klub_id'];
         }
@@ -46,7 +49,7 @@ class Member extends AppModel
             LEFT JOIN user ON member.user_id=user.id
             LEFT JOIN klub ON member.klub_id=klub.klub_id
             WHERE level = ? AND
-            member.klub_id IN ($klubs)", array(REQUESTED));
+            member.klub_id IN ($klubs)", array(self::REQUESTED));
         return $requests;
     }
 
@@ -59,7 +62,7 @@ class Member extends AppModel
         $memberships = array();
         $db = DB::conn();
         $rows = $db->rows("SELECT klub_id from member
-            WHERE user_id = ? AND level = ?", array($this->user_id,MEMBER));
+            WHERE user_id = ? AND level = ?", array($this->user_id,self::MEMBER));
         foreach ($rows as $membership) {
             $memberships[] = $membership['klub_id'];
         }
@@ -75,7 +78,7 @@ class Member extends AppModel
         $leaderships = array();
         $db = DB::conn();
         $rows = $db->rows("SELECT klub_id from member
-            WHERE user_id = ? AND level = ?", array($this->user_id,LEADER));
+            WHERE user_id = ? AND level = ?", array($this->user_id,self::LEADER));
         foreach ($rows as $leadership) {
             $leaderships[] = $leadership['klub_id'];
         }
@@ -107,7 +110,7 @@ class Member extends AppModel
             LEFT JOIN user ON member.user_id=user.id
             WHERE klub_id = ? AND level != ?
             ORDER BY member.updated DESC
-            LIMIT $start,$records_per_page", array($klub_id,REQUESTED));
+            LIMIT $start,$records_per_page", array($klub_id,self::REQUESTED));
         return $members;
     }
 
