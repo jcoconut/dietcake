@@ -17,7 +17,6 @@ class Member extends AppModel
             "level" => self::REQUESTED,
         );
         $db->insert("member", $params);
-        return true;
     }
 
     /**
@@ -123,9 +122,13 @@ class Member extends AppModel
     public static function getBoth($user_id)
     {
         $db = DB::conn();
-        $klubs = $db->rows("SELECT * from member
+        $rows = $db->rows("SELECT * from member
             LEFT JOIN klub ON member.klub_id=klub.klub_id
             WHERE user_id = ?", array($user_id));
+        $klubs = array();
+        foreach ($rows as $row) {
+            $klubs[] = new self($row);
+        }
         return $klubs;
     }
 
@@ -159,8 +162,7 @@ class Member extends AppModel
         $where_params = array(
             "id" => $this->id
         );
-        $db->update("member", $params, $where_params);
-        return true;     
+        $db->update("member", $params, $where_params);     
     }
 
     /**

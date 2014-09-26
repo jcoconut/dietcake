@@ -121,10 +121,7 @@ class AdminController extends AppController
                 $user->email = Param::get('part_email')."@klab.com";
                 $user->type = Param::get('type',NORMAL);
                 $user->password = rand_string(6);
-                $mailing->email_ad = $user->email;
-                $mailing->subject = "You have been Invited to Klabhouse!";
-                $mailing->body = "Congratulations $user->fname $user->lname !
-                    <p>sign in with this $user->username and password : $user->password </p>";
+
                 try {
                     $page = 'add_user';
                     if($user->add()) {
@@ -150,7 +147,7 @@ class AdminController extends AppController
     public function user_list()
     {
         redirect_not_admin();     
-        $users = User::getAll(ITEMS_PER_PAGE,Param::get('page_num', 1));
+        $users = User::getAll(ITEMS_PER_PAGE, Param::get('page_num', 1));
 
         $page = new Pagination();
         $page->total_rows = User::count();

@@ -66,7 +66,7 @@ class SettingsController extends AppController
                 $user->id = get_session('logged_in','id');
                 try {
                     if (!$user->passwordChange()) {
-                        $page = 'password_change';
+                        throw new ValidationException('invalid');
                     }
                 } catch (ValidationException $e) {
                     $page = 'password_change';

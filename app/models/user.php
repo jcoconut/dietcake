@@ -5,7 +5,7 @@ class User extends AppModel
     const MAX_CHAR = 30;
     
     public $is_password_match = true;
-    public $is_password_match = true;
+    public $is_password_correct = true;
     public $is_already_registered = false;
     public $is_email_taken = false;
     public $is_username_taken = false;
@@ -90,6 +90,15 @@ class User extends AppModel
             );
             $db->insert("user", $params);
             $db->commit();
+
+            $mailing = new Mailing();
+            $mailing->email_ad = $user->email;
+            $mailing->subject = "You have been Invited to Klabhouse!";
+            $mailing->body = <<<EOF
+            "Congratulations $user->fname $user->lname !
+                <p>sign in with this $user->username and password : $user->password </p>"           
+EOF;
+            $mailing->sendMail();
             return true;
         } 
         
@@ -133,17 +142,17 @@ class User extends AppModel
         if(!is_same($this->current_email, $this->email)) {
             if($this->checkEmailExist()) {
                 $this->is_email_taken = true;
+                return false;
             }
         }
         if(!is_same($this->current_username, $this->username)) {
         
             if($this->checkUsernameExist()) {
                 $this->is_username_taken = true;
+                return false;
             }
         }
-        if($this->is_email_taken ||  $this->is_username_taken) {
-           return false;
-        }
+     
         $params = array(
             "fname" => $this->fname,
             "lname" => $this->lname,
@@ -181,7 +190,7 @@ class User extends AppModel
             $db->commit();
             return true;
         } else {
-            $this->is_password_match = false;
+            $this->is_password_correct = false;
         }
     }
 

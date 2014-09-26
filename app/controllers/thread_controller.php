@@ -13,7 +13,7 @@ class ThreadController extends AppController
         $thread = new Thread();
         $thread->page_num = Param::get('page_num', 1);        
         $threads = $thread->getAll(ITEMS_PER_PAGE);
-        if (count($threads)>0) {
+        if (($threads)) {
             $page = new Pagination();
             $page->total_rows = Thread::countThreads();
             $page->per_page = ITEMS_PER_PAGE;

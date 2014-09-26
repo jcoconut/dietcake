@@ -32,7 +32,6 @@ class Thread extends AppModel
         $this->id = $db->lastInsertId();
         $comment->write($this->id);
         $db->commit();
-        return true;
     }
 
     /**

@@ -28,10 +28,10 @@ class Klub extends AppModel
     {  
         $db = DB::conn();
         $except = Member::REQUESTED;
-        $member_count = "(SELECT COUNT(id) FROM member
+        $klubs = $db->rows("SELECT klub.klub_id,klub_name,klub_details,
+            (SELECT COUNT(id) FROM member
             WHERE klub.klub_id = member.klub_id
-            AND member.level != $except)";
-        $klubs = $db->rows("SELECT klub.klub_id,klub_name,klub_details,$member_count as members from klub");  
+            AND member.level != ?) as members from klub" , array($except));  
         return $klubs;    
     }
 
@@ -43,7 +43,10 @@ class Klub extends AppModel
     {  
         $db = DB::conn();
         $row = $db->row("SELECT * from klub WHERE klub_id = ?", array($klub_id));  
-        return new self($row);    
+        if($row) {
+            return new self($row);    
+        }
+        
     }
 
     /**
@@ -70,8 +73,7 @@ class Klub extends AppModel
         );
         $db->insert("klub", $params);
         $this->id = $db->lastInsertId();
-        $db->commit();
-        return true;      
+        $db->commit();     
     }
 
     /**
@@ -101,15 +103,15 @@ class Klub extends AppModel
             $this->klub_taken = true;
             throw new ValidationException();
         }
-            $params = array(
-                "klub_name" => $this->klub_name,
-                "klub_details" => $this->klub_details,
-                "klub_updated" => date('Y-m-d H:i:s'),
-            );
-            $where_params = array("klub_id" => $this->klub_id);
-            $db->update("klub", $params, $where_params);
-            $db->commit();
-            return true;
+        $params = array(
+            "klub_name" => $this->klub_name,
+            "klub_details" => $this->klub_details,
+            "klub_updated" => date('Y-m-d H:i:s'),
+        );
+        $where_params = array("klub_id" => $this->klub_id);
+        $db->update("klub", $params, $where_params);
+        $db->commit();
+        return true;
     }
 
     /**
