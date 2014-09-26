@@ -41,13 +41,14 @@ class Member extends AppModel
     */
     public function getKlubRequests()
     {
-        $columns = "member.id,klub.klub_name,member.user_id,member.klub_id,user.fname,member.created";
+        $columns = "member.id,member.user_id,member.klub_id,member.created";
+        $user = "(SELECT user.fname FROM user where user.id=member.user_id)";
+        $klub = "(SELECT klub_name FROM klub where klub.klub_id=member.klub_id)";
         $db = DB::conn();
         $klubs = implode(", ", $this->klubs); 
-        $requests = $db->rows("SELECT $columns from member
-            LEFT JOIN user ON member.user_id=user.id
-            LEFT JOIN klub ON member.klub_id=klub.klub_id
-            WHERE level = ? AND
+        $requests = $db->rows("SELECT $columns,
+            $user as fname, $klub as klub_name 
+            from member WHERE level = ? AND
             member.klub_id IN ($klubs)", array(self::REQUESTED));
         return $requests;
     }
