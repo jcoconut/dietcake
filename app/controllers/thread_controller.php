@@ -76,7 +76,7 @@ class ThreadController extends AppController
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
         $view_thread = $thread->get(Param::get('id'));
-        $thread->id = $view_thread['id'];
+        $thread->id = $view_thread->id;
         $comments = $thread->getComments($thread->id, ITEMS_PER_PAGE);  
         $page = new Pagination();
         $page->total_rows = $thread->countComments();

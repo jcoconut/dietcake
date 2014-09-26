@@ -140,7 +140,7 @@ class Member extends AppModel
     {
         $klub_ids = array();
         $db = DB::conn();
-        $klubs = $db->rows("SELECT member.klub_id from member
+        $klubs = $db->columns("SELECT member.klub_id from member
             WHERE user_id = ?", array($this->user_id));
         foreach ($klubs as $klub) {
             $klub_ids[] = $klub['klub_id'];
