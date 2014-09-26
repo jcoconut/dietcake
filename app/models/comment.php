@@ -2,7 +2,6 @@
 class Comment extends AppModel
 {
     
-
     public $validation = array(
         
         'body' => array(
@@ -10,7 +9,13 @@ class Comment extends AppModel
             'required',
             ),
         ),
+        'body' => array(
+            'length' => array(
+                'is_between', MIN_CHAR, MAX_CHAR_BODY,
+            ),
+        )
     );
+
     /**
     * insert a new comment
     * @param $thread_id
@@ -22,9 +27,9 @@ class Comment extends AppModel
         }
         $db = DB::conn();
         $params = array(
-            "comment_thread_id" => $thread_id,
-            "comment_user_id" => $this->user_id,
-            "comment_body" => $this->body,  
+            "thread_id" => $thread_id,
+            "user_id" => $this->user_id,
+            "body" => $this->body,  
             );
         $db->insert("comment", $params);
     }

@@ -1,4 +1,7 @@
 app/config/core.php
+app/controllers/cheats_controller.php
 app/tmp/logs/*
 app/webroot/*
 app/views/*
+vendor/*
+lib/mailing_lib.php

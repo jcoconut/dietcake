@@ -2,68 +2,94 @@
 class UserController extends AppController
 {
     /**
-    * login
+    * user home page
     */
-    public function userLogin()
+    public function index()
     {
-        $user = new User();
-        $user->user_username = Param::get('user_username');
-        $user->user_password = Param::get('user_password');
-        $logged_user = $user->validateLogin();
-        
-        if ($logged_user) {
-            add_session('logged_in',$logged_user);
-        } else {
-            flash_message( 'login_failed', 'Login credentials invalid!' ); 
+        redirect_if_admin();
+        $member = new Member();
+        $member->user_id = get_session('logged_in','id');
+        $member->klubs = $member->getUserLeaderships();
+        $klubs = $member->getBoth(get_session('logged_in','id'));
+        if(count($member->klubs)) {
+            $requests = $member->getKlubRequests();
         }
-        redirect(url('/'));
+        $this->set(get_defined_vars());    
     }
 
     /**
-    * logout,remove/destroy session
+    * klub list
     */
-    public function logOut()
+    public function klubs()
     {
-        session_destroy();
-        redirect(url('/'));
+        redirect_if_admin();
+        $klubs = Klub::getAll();
+
+        $member = new Member();
+        $member->user_id = get_session('logged_in', 'id');
+        $memberships = $member->getUserMemberships();
+        $leaderships = $member->getUserLeaderships();
+        $requests = $member->getUserRequests();
+        $this->set(get_defined_vars());    
+   }
+
+    /**
+    * join the klub
+    */
+    public function join()
+    {
+        redirect_if_admin();
+        $member = new Member();
+        $member->klub_id = Param::get('klub_id');
+        $member->klub_name = Param::get('klub_name');
+        $member->user_id = get_session('logged_in','id');
+        $requested = $member->addRequest();
+        if($requested) {
+            $message = "You requested to join $member->klub_name,<br>Please wait to be accepted";
+            flash_message("message", $message);
+            flash_message('positive_message', 1);
+        }
+        redirect('klubs');
     }
 
     /**
-    * register user
+    * klub members
     */
-    public function registerUser()
+    public function member_list()
     {
-        $user = new User();
-        $page = Param::get('page_next', 'registeruser');
-        switch ($page) {
+        redirect_if_admin();
+        $klub_id = Param::get('id');
+        $selected_klub = Klub::get($klub_id);
+        $members = Member::getKlubMembers(ITEMS_PER_PAGE, $klub_id, Param::get('page_num', 1));
 
-            case 'registeruser':
-
-                break;
-
-            case 'register_ok': 
-                $user->user_fname = Param::get('user_fname');
-                $user->user_lname = Param::get('user_lname');
-                $user->user_username = Param::get('user_username');
-                $user->user_email = Param::get('user_email');
-                $user->user_password = Param::get('user_password');
-                $user->user_confirm_password = Param::get('user_confirm_password');
-                try {
-                    if(!$user->register()){
-                        $page = 'registeruser';
-                    }
-                   
-                } catch (ValidationException $e) {
-                    $page = 'registeruser';
-                }
-                break;
-            default:
-                throw new NotFoundException("{$page} is not found");
-                break;
-        }
-        
+        $page = new Pagination();
+        $page->total_rows = Member::countMembers(Param::get('id'));
+        $page->per_page = ITEMS_PER_PAGE;
+        $page->extra_query = array("id=$klub_id");
+        $paginate = $page->pageIt();
         $this->set(get_defined_vars());
-        $this->render($page);
     }
 
+    /**
+    * view user's klubs
+    */
+    public function view_user_klubs()
+    {
+        redirect_if_admin();
+        $user_info = User::get(Param::get('id'));
+        $klubs = Member::getBoth(Param::get('id'));
+        $this->set(get_defined_vars());
+    }
+    
+    /**
+    * accept request
+    */
+    public function accept_request()
+    {
+        redirect_if_admin();
+        $member = new Member();
+        $member->id = Param::get('id');
+        $accepted = $member->acceptMember();
+        redirect(url('user/index'));
+    }
 }

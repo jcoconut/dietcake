@@ -1,25 +1,26 @@
 <?php
 class ThreadController extends AppController
 {
-    const THREADS_PER_PAGE = 10;
-    const COMMENTS_PER_PAGE = 10;
-
     /**
-    * homepage
+    * thread list
     */
-    public function index()
+    public function threads()
     {
+        redirect_if_admin();
+        $member = new Member();
+        $member->user_id = get_session('logged_in','id');
+        $klubs = $member->getUserKlubIds();
         $thread = new Thread();
         $thread->page_num = Param::get('page_num', 1);        
-        $threads = $thread->getAll(self::THREADS_PER_PAGE);
-        if (count($threads)>0) {
+        $threads = $thread->getAll(ITEMS_PER_PAGE);
+        if (($threads)) {
             $page = new Pagination();
             $page->total_rows = Thread::countThreads();
-            $page->per_page = self::THREADS_PER_PAGE;
+            $page->per_page = ITEMS_PER_PAGE;
             $paginate = $page->pageIt();
         }
         if (Thread::countThreads() > 0 && count($threads) == 0) {
-            $threads = "not exist";
+            $threads = "none";
         }
         $this->set(get_defined_vars());
     }
@@ -27,28 +28,29 @@ class ThreadController extends AppController
     /**
     * create thread
     */
-    public function createThread()
+    public function create_thread()
     {
         
-        if (!check_session('logged_in')) {
-            redirect(url('/'));
-        }
-
+        redirect_if_admin();
         $thread = new Thread;
         $comment = new Comment;
-        
+        $member = new Member();
+        $member->user_id = get_session('logged_in','id');
+        $klubs = $member->getBoth($member->user_id);
         $page = Param::get('page_next', 'create');
         switch ($page)
         {
             case 'create':
                 break;
             case 'create_end':
-                $thread->thread_title = Param::get('thread_title');
-                $comment->user_id = get_session('logged_in', 'user_id');
+                $thread->title = Param::get('title');
+                $thread->privacy = Param::get('privacy');
+                $thread->klub_id = Param::get('klub_id');
+                $comment->user_id = get_session('logged_in', 'id');
                 $comment->body = Param::get('body');
                 try {
                     if ( $thread->create($comment) ) {
-                        redirect(url('thread/viewthread?thread_id='.$thread->thread_id));
+                        redirect(url('thread/view_thread', array('id' => $thread->id)));
                     } else {
                         $page = 'create';
                     }
@@ -68,17 +70,18 @@ class ThreadController extends AppController
     /**
     * view thread and its comments
     */
-    public function viewThread()
+    public function view_thread()
     {
+        redirect_if_admin();
         $thread = new Thread();
         $thread->page_num = Param::get('page_num',1);
-        $view_thread = $thread->get(Param::get('thread_id'));
-        $thread->thread_id = $view_thread['thread_id'];
-        $comments = $thread->getComments($thread->thread_id, self::COMMENTS_PER_PAGE);  
+        $view_thread = $thread->get(Param::get('id'));
+        $thread->id = $view_thread->id;
+        $comments = $thread->getComments($thread->id, ITEMS_PER_PAGE);  
         $page = new Pagination();
         $page->total_rows = $thread->countComments();
-        $page->per_page = self::COMMENTS_PER_PAGE;
-        $page->extra_query = array("thread_id=$thread->thread_id");
+        $page->per_page = ITEMS_PER_PAGE;
+        $page->extra_query = array("id=$thread->id");
         $paginate = $page->pageIt();
         $this->set(get_defined_vars());
     }
@@ -86,18 +89,19 @@ class ThreadController extends AppController
     /**
     * writes comment on thread
     */
-    public function writeComment()
+    public function write_comment()
     {   
+        redirect_if_admin();
         $comment = new Comment;
-        $comment->thread_id = Param::get('thread_id'); 
-        $comment->user_id = get_session('logged_in', 'user_id');
+        $comment->thread_id = Param::get('id'); 
+        $comment->user_id = get_session('logged_in', 'id');
         $comment->body = Param::get('body');
         $page = Param::get('page_next', 'write');
         switch ($page) {
             case 'write':
                 break;
             case 'write_end':   
-                redirect(url('thread/viewthread?thread_id='.$comment->thread_id));
+                redirect(url('thread/view_thread', array('id' => $comment->thread_id)));
                 try {
                     $comment->write($comment->thread_id);
                 } catch (ValidationException $e) {
@@ -108,7 +112,6 @@ class ThreadController extends AppController
                 throw new NotFoundException("{$page} is not found");
                 break;
         }
-
     }
 
 }

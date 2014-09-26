@@ -1,0 +1,55 @@
+--
+-- Create database
+--
+CREATE DATABASE IF NOT EXISTS klabhouse;
+GRANT SELECT, INSERT, UPDATE, DELETE ON klabhouse.* TO klabhouse_root@localhost IDENTIFIED BY 'klabhouse_root';
+FLUSH PRIVILEGES;
+--
+-- Create tables
+--
+
+USE klabhouse;
+CREATE TABLE IF NOT EXISTS user (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    fname VARCHAR(50) NOT NULL,
+    lname VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    image VARCHAR(50),
+    type INT(1),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated DATETIME,
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE IF NOT EXISTS thread (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    title VARCHAR(50) NOT NULL,
+    privacy TINYINT(1),
+    user_id INT (11),
+    klub_id INT (11),
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated DATETIME,
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE IF NOT EXISTS comment (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    thread_id INT UNSIGNED NOT NULL,
+    user_id INT (11) NOT NULL,
+    body TEXT NOT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated DATETIME,
+    PRIMARY KEY (id),
+    INDEX (thread_id, created)
+)ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE IF NOT EXISTS klub (
+    klub_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    klub_name VARCHAR(50) NOT NULL,
+    klub_details TEXT NOT NULL,
+    klub_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    klub_updated DATETIME,
+    PRIMARY KEY (klub_id)
+)ENGINE=InnoDB;
