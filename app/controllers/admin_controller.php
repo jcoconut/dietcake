@@ -29,7 +29,6 @@ class AdminController extends AppController
                 $klub->klub_name = Param::get('klub_name');
                 $klub->klub_details = Param::get('klub_details');
                 try {
-    
                     $klub->add();
                     flash_message('message', 'Klub has been Added!');
                     flash_message('positive_message', true);
@@ -108,7 +107,7 @@ class AdminController extends AppController
     {
         redirect_not_admin();
         $user = new User();
-        $mailing = new Mailing();
+        
         $page = Param::get('page_next', 'add_user');
         switch ($page) {
             case 'add_user':
@@ -125,10 +124,8 @@ class AdminController extends AppController
                 try {
                     $page = 'add_user';
                     if($user->add()) {
-                        $mailing->sendMail();
                         redirect(url(''));
                     }
-                   
                 } catch (ValidationException $e) {
                     $page = 'add_user';
                 }
