@@ -9,11 +9,10 @@ class SessionController extends AppController
     {
         if (is_logged('logged_in')) {
             $type = get_session('logged_in','type');
-            switch ($type) {
-                case NORMAL:
-                    redirect(url('user/index')); 
-                case ADMIN:
-                    redirect(url('admin/index'));  
+            if($type == ADMIN) {
+                redirect(url('admin/index'));  
+            } else {
+                redirect(url('user/index')); 
             }
         }
     }
